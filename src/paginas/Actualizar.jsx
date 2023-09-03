@@ -1,4 +1,3 @@
-import React from 'react'
 import { Formulario } from '../componets/Formulario'
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
