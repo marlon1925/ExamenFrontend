@@ -67,17 +67,17 @@ const FormularioPerfil = () => {
                     htmlFor="nombre"
                     className="text-gray-700 uppercase font-bold text-sm"
                 >
-                    Nombre:
+                    Full name:
                 </label>
                 <Controller
                     name="nombre"
                     control={control}
                     defaultValue=""
                     rules={{
-                        required: 'Este campo es obligatorio',
+                        required: 'Obligatory field',
                         pattern: {
                             value: /^[A-Za-z\s]+$/,
-                            message: 'Ingresa solo letras en este campo',
+                            message: 'Only letters are accepted',
                         },
                     }}
                     render={({ field }) => (
@@ -85,8 +85,8 @@ const FormularioPerfil = () => {
                             <input
                                 {...field}
                                 type="text"
-                                placeholder="Ingresa tu nombre"
-                                maxLength={40}
+                                placeholder="Enter your name"
+                                maxLength={20}
                                 className={`block w-full rounded-md border ${errors.nombre ? 'border-red-500' : 'border-gray-300'
                                     } focus:border-gray-700 focus:outline-none focus:ring-1 focus:ring-gray-700 py-1 px-1.5 text-gray-500`}
                                 required
@@ -102,17 +102,17 @@ const FormularioPerfil = () => {
                     htmlFor="apellido"
                     className="text-gray-700 uppercase font-bold text-sm"
                 >
-                    Apellido:
+                    Last name:
                 </label>
                 <Controller
                     name="apellido"
                     control={control}
                     defaultValue=""
                     rules={{
-                        required: "Este campo es obligatorio",
+                        required: "Obligatory field",
                         pattern: {
                             value: /^[A-Za-z\s]+$/,
-                            message: 'Ingresa solo letras en este campo',
+                            message: 'Only letters are accepted',
                         },
                     }}
                     render={({ field }) => (
@@ -120,8 +120,8 @@ const FormularioPerfil = () => {
                             <input
                                 {...field}
                                 type="text"
-                                placeholder="Ingresa tu apellido"
-                                maxLength={40}
+                                placeholder="Enter your last name"
+                                maxLength={20}
                                 className={`block w-full rounded-md border ${errors.apellido ? "border-red-500" : "border-gray-300"
                                     } focus:border-gray-700 focus:outline-none focus:ring-1 focus:ring-gray-700 py-1 px-1.5 text-gray-500`}
                                 required
@@ -134,26 +134,27 @@ const FormularioPerfil = () => {
                 />
             </div>
 
+
             <div>
                 <label
                     htmlFor="direccion"
                     className="text-gray-700 uppercase font-bold text-sm"
                 >
-                    Dirección:
+                    Address:
                 </label>
                 <Controller
                     name="direccion"
                     control={control}
                     defaultValue=""
                     rules={{
-                        required: "Este campo es obligatorio"
+                        required: "Obligatory field"
                     }}
                     render={({ field }) => (
                         <div className="mb-3">
                             <input
                                 {...field}
                                 type="text"
-                                placeholder="Ingresa tu dirección"
+                                placeholder="Enter your address"
                                 maxLength={120}
                                 className={`block w-full rounded-md border ${errors.direccion ? "border-red-500" : "border-gray-300"
                                     } focus:border-gray-700 focus:outline-none focus:ring-1 focus:ring-gray-700 py-1 px-1.5 text-gray-500`}
@@ -175,17 +176,17 @@ const FormularioPerfil = () => {
                     htmlFor="telefono"
                     className="text-gray-700 uppercase font-bold text-sm"
                 >
-                    Teléfono:
+                    Phone:
                 </label>
                 <Controller
                     name="telefono"
                     control={control}
                     defaultValue=""
                     rules={{
-                        required: "Este campo es obligatorio",
+                        required: "Obligatory field",
                         pattern: {
-                            value: /^[0-9]{1,15}$/,
-                            message: 'Ingresa solo números en este campo (hasta 15 dígitos)',
+                            value: /^[0-9]{10}$/,
+                            message: 'Valid phone with 10 digits',
                         },
                     }}
                     render={({ field }) => (
@@ -193,7 +194,7 @@ const FormularioPerfil = () => {
                             <input
                                 {...field}
                                 type="number"
-                                placeholder="Ingresa tu teléfono"
+                                placeholder="Enter your phone"
                                 className={`block w-full rounded-md border ${errors.telefono ? "border-red-500" : "border-gray-300"
                                     } focus:border-gray-700 focus:outline-none focus:ring-1 focus:ring-gray-700 py-1 px-1.5 text-gray-500`}
                                 required
@@ -218,14 +219,14 @@ const FormularioPerfil = () => {
                     control={control}
                     defaultValue=""
                     rules={{
-                        required: "Este campo es obligatorio",
+                        required: "Obligatory field",
                         pattern: {
                             value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
-                            message: "Formato de correo electrónico inválido",
+                            message: "Invalid email",
                         },
                         maxLength: {
-                            value: 60,
-                            message: "El email debe tener un máximo de 60 caracteres",
+                            value: 100,
+                            message: "Maximum length reached",
                         },
                     }}
                     render={({ field }) => (
@@ -233,8 +234,8 @@ const FormularioPerfil = () => {
                             <input
                                 {...field}
                                 type="email"
-                                placeholder="Introduce tu correo electrónico"
-                                maxLength={60}
+                                placeholder="Enter your email"
+                                maxLength={100}
                                 className={`block w-full rounded-md border ${errors.email ? "border-red-500" : "border-gray-300"
                                     } focus:border-purple-700 focus:outline-none focus:ring-1 focus:ring-purple-700 py-1 px-1.5 text-gray-500`}
                             />

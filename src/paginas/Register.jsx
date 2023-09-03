@@ -105,7 +105,7 @@ export const Register = () => {
                                 control={control}
                                 defaultValue=""
                                 rules={{
-                                    required: "Campo Obligatorio",
+                                    required: "Obligatory field",
                                     pattern: {
                                         value: /^[A-Za-z\s]+$/,
                                         message: 'Only letters are accepted',
@@ -142,7 +142,7 @@ export const Register = () => {
                                 control={control}
                                 defaultValue=""
                                 rules={{
-                                    required: "Campo Obligatorio"
+                                    required: "Obligatory field"
                                 }}
                                 render={({ field }) => (
                                     <div className="mb-3">
@@ -175,7 +175,7 @@ export const Register = () => {
                                 control={control}
                                 defaultValue=""
                                 rules={{
-                                    required: "Campo Obligatorio",
+                                    required: "Obligatory field",
                                     pattern: {
                                         value: /^[0-9]{10}$/,
                                         message: 'Valid phone with 10 digits',
@@ -211,7 +211,7 @@ export const Register = () => {
                                 control={control}
                                 defaultValue=""
                                 rules={{
-                                    required: "Campo Obligatorio",
+                                    required: "Obligatory field",
                                     pattern: {
                                         value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
                                         message: "Invalid email",
@@ -251,7 +251,7 @@ export const Register = () => {
                                 control={control}
                                 defaultValue=""
                                 rules={{
-                                    required: "Campo Obligatorio",
+                                    required: "Obligatory field",
                                     maxLength: {
                                         value: 50,
                                         message: "Maximum length reached",

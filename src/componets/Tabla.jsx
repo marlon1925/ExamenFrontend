@@ -50,7 +50,7 @@ const Tabla = () => {
     const handleDelete = async (id) => {
         try {
             const confirmar = window.confirm(
-                "Vas a registrar la salida de un paciente, ¿Estás seguro de realizar esta acción?"
+                "You are going to check out a patient, are you sure to perform this action?"
             );
             if (confirmar) {
                 const token = localStorage.getItem("token");

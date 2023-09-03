@@ -100,7 +100,7 @@ export const Formulario = ({ paciente }) => {
                     control={control}
                     defaultValue=''
                     rules={{
-                        required: 'Campo Obligatorio',
+                        required: 'Obligatory field',
                         pattern: {
                             value: /^[A-Za-z\s]+$/,
                             message: 'Only letters are accepted',
@@ -133,7 +133,7 @@ export const Formulario = ({ paciente }) => {
                     control={control}
                     defaultValue=''
                     rules={{
-                        required: 'Campo Obligatorio',
+                        required: 'Obligatory field',
                         pattern: {
                             value: /^[A-Za-z\s]+$/,
                             message: 'Only letters are accepted',
@@ -165,10 +165,10 @@ export const Formulario = ({ paciente }) => {
                     control={control}
                     defaultValue=''
                     rules={{
-                        required: 'Campo Obligatorio',
+                        required: 'Obligatory field',
                         pattern: {
                             value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
-                            message: 'Correo electrónico no válido',
+                            message: 'Invalid email',
                         },
 
                     }}
@@ -180,7 +180,7 @@ export const Formulario = ({ paciente }) => {
                                 className={`border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md mb-5 ${fieldState.invalid ? 'border-red-500' : ''
                                     }`}
                                 placeholder='Enter the owner email'
-                                maxLength={60}
+                                maxLength={100}
                             />
                             {fieldState.error && (
                                 <p className="text-red-500 text-sm">{fieldState.error.message}</p>
@@ -198,7 +198,7 @@ export const Formulario = ({ paciente }) => {
                     control={control}
                     defaultValue=''
                     rules={{
-                        required: 'Campo Obligatorio',
+                        required: 'Obligatory field',
                         pattern: {
                             value: /^[0-9]*$/,
                             message: 'Valid phone with 10 digits',
@@ -208,10 +208,10 @@ export const Formulario = ({ paciente }) => {
                         <div>
                             <input
                                 {...field}
-                                type="number"
+                                type="text"
+                                placeholder='Owner cell phone'
                                 className={`border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md mb-5 ${fieldState.invalid ? 'border-red-500' : ''
                                     }`}
-                                placeholder='Owner cell phone'
                             />
                             {fieldState.error && (
                                 <p className="text-red-500 text-sm">{fieldState.error.message}</p>
@@ -229,10 +229,10 @@ export const Formulario = ({ paciente }) => {
                     control={control}
                     defaultValue=''
                     rules={{
-                        required: 'Campo Obligatorio',
+                        required: 'Obligatory field',
                         pattern: {
-                            value: /^[0-9]*$/,
-                            message: 'Número de teléfono válido con 15 dígitos',
+                            value: /^[0-9]{15}$/,
+                            message: 'Valid phone with 15 digits',
                         },
                     }}
                     render={({ field, fieldState }) => (
@@ -260,7 +260,7 @@ export const Formulario = ({ paciente }) => {
                     control={control}
                     defaultValue=''
                     rules={{
-                        required: 'Campo Obligatorio',
+                        required: 'Obligatory field',
                     }}
                     render={({ field, fieldState }) => (
                         <div>
@@ -287,7 +287,7 @@ export const Formulario = ({ paciente }) => {
                     control={control}
                     defaultValue=''
                     rules={{
-                        required: 'Campo Obligatorio'
+                        required: 'Obligatory field'
                     }}
                     render={({ field, fieldState }) => (
                         <div>
