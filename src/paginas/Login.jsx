@@ -22,21 +22,29 @@ const Login = () => {
             setAuth(respuesta.data);
             navigate('/dashboard');
         } catch (error) {
-            if (error.response && error.response.status === 404) {
+            if (mensaje.response && mensaje.response.status === 404) {
                 // Cuenta no encontrada, muestra un mensaje de error
-                setError('La cuenta no existe');
+                setMensaje({
+                    respuesta: "Cuenta ya existe",
+                    tipo: false,
+                });
             } else {
                 // Otro tipo de error, muestra el mensaje de error estándar
-                setError(error.response.data.msg);
+                setError(error.response.data.msg || "Something went wrong."); // Puedes proporcionar un mensaje por defecto aquí
             }
+
+            // Limpia el mensaje de error después de un tiempo
             setTimeout(() => {
-                setError(""); // Limpia el mensaje de error después de un tiempo
+                setMensaje({}); // Limpia el estado mensaje
+                setError(""); // Limpia el estado error
             }, 3000);
         }
     };
 
     return (
         <>
+            {Object.keys(mensaje).length > 0 && <Mensaje tipo={mensaje.tipo}>{mensaje.respuesta}</Mensaje>}
+
             <div className="w-1/2 h-screen bg-[url('/public/images/doglogin.jpg')] 
             bg-no-repeat bg-cover bg-center sm:block hidden
             ">
@@ -97,7 +105,7 @@ const Login = () => {
                             <button className="py-2 w-full block text-center bg-gray-500 text-slate-300 border rounded-xl hover:scale-100 duration-300 hover:bg-gray-900 hover:text-white">Login</button>
                         </div>
                     </form>
-  
+
                     {error && (
                         <div className="text-red-500 text-sm mt-2">
                             {error}
