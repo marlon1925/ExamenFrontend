@@ -88,7 +88,6 @@ export const Formulario = ({ paciente }) => {
             }, 3000);
         }
     };
-
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
             {Object.keys(mensaje).length > 0 && <Mensaje tipo={mensaje.tipo}>{mensaje.respuesta}</Mensaje>}
@@ -279,7 +278,6 @@ export const Formulario = ({ paciente }) => {
                     )}
                 />
             </div>
-
             <div>
                 <label
                     htmlFor='sintomas:'
@@ -334,3 +332,4 @@ export const Formulario = ({ paciente }) => {
         </form>
     )
 }
+ 
