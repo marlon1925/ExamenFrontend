@@ -12,7 +12,7 @@ const Dashboard = () => {
 
             <div className='md:w-1/5 bg-gray-800 px-5 py-4'>
 
-                <h2 className='text-4xl font-black text-center text-slate-200'>APP-DEMO</h2>
+                <h2 className='text-4xl font-black text-center text-slate-200'>ECUA-PETS</h2>
 
                 <img src="https://cdn-icons-png.flaticon.com/512/2138/2138508.png" alt="img-client" className="m-auto mt-8 p-1 border-2 border-slate-500 rounded-full" width={120} height={120} />
                 <p className='text-slate-400 text-center my-4 text-sm'>
@@ -39,7 +39,7 @@ const Dashboard = () => {
             <div className='flex-1 flex flex-col justify-between h-screen bg-gray-100'>
                 <div className='bg-gray-800 py-2 flex md:justify-end items-center gap-5 justify-center'>
                     <div className='text-md font-semibold text-slate-100'>
-                        Usuario - Admin
+                        {auth?.nombre} - Veterinario
                     </div>
                     <div>
                         <img src="https://cdn-icons-png.flaticon.com/512/4715/4715329.png" alt="img-client" className="border-2 border-green-600 rounded-full" width={50} height={50} />
