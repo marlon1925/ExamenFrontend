@@ -25,7 +25,7 @@ const Login = () => {
             if (mensaje.response && mensaje.response.status === 404) {
                 // Cuenta no encontrada, muestra un mensaje de error
                 setMensaje({
-                    respuesta: "Cuenta ya existe",
+                    respuesta: "Account already exists",
                     tipo: false,
                 });
             } else {
