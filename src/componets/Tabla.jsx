@@ -8,15 +8,21 @@ import {
     useFilters,
     useGlobalFilter,
     usePagination,
-    canPreviousPage,
-    canNextPage,
 } from "react-table";
-import { FaTrashAlt, FaEdit, FaInfo } from "react-icons/fa";
+import { FaTrashAlt, FaEdit, FaFolderOpen, FaClock, FaAngleDown } from "react-icons/fa";
+
 
 const Tabla = () => {
     const navigate = useNavigate();
     const [pacientes, setPacientes] = useState([]);
     const [noMorePages, setNoMorePages] = useState(false);
+    const [filtroTiempo, setFiltroTiempo] = useState("today");
+    const [menuAbierto, setMenuAbierto] = useState(false);
+
+    const handleFiltroTiempoChange = (nuevoFiltro) => {
+        setFiltroTiempo(nuevoFiltro);
+        setMenuAbierto(false);
+    };
 
     const listarPacientes = async () => {
         try {
@@ -37,11 +43,15 @@ const Tabla = () => {
                 setNoMorePages(false);
             }
 
+            // Ordena los pacientes por la fecha de salida de forma descendente
+            data.sort((a, b) => new Date(b.salida) - new Date(a.salida));
+
             setPacientes(data);
         } catch (error) {
             console.log(error);
         }
     };
+
 
     useEffect(() => {
         listarPacientes();
@@ -105,19 +115,20 @@ const Tabla = () => {
                     </span>
                 ),
             },
+
             {
                 Header: "Acciones",
                 accessor: "acciones",
                 Cell: ({ row }) => (
                     <div className="py-2 text-center">
                         {/* Reemplaza MdDeleteForever con FaTrashAlt */}
-                        <FaEdit
+                        <FaFolderOpen
                             className="h-7 w-7 text-slate-800 cursor-pointer inline-block mr-2"
                             onClick={() =>
                                 navigate(`/dashboard/visualizar/${row.original._id}`)
                             }
                         />
-                        <FaInfo
+                        <FaEdit
                             className="h-7 w-7 text-slate-800 cursor-pointer inline-block mr-2"
                             onClick={() =>
                                 navigate(`/dashboard/actualizar/${row.original._id}`)
@@ -135,7 +146,6 @@ const Tabla = () => {
         ],
         []
     );
-
     const {
         getTableProps,
         getTableBodyProps,
@@ -148,21 +158,26 @@ const Tabla = () => {
         gotoPage,
         setPageSize,
         previousPage,
+        canPreviousPage,
+        canNextPage,
+        pageCount,
     } = useTable(
         {
             columns,
             data,
-            initialState: { pageSize: 10 },
+            initialState: { pageSize: 10, defaultCanSort: true }, // Agrega defaultCanSort
         },
         useFilters,
         useGlobalFilter,
         usePagination
     );
 
+
     return (
         <div className="mt-4">
+
             {pacientes.length === 0 ? (
-                <Mensaje tipo={"active"}>{"No existen registros"}</Mensaje>
+                <Mensaje tipo={"active"}>{"No records"}</Mensaje>
             ) : (
                 <>
                     <div className="flex justify-between items-center mb-4">
@@ -193,6 +208,50 @@ const Tabla = () => {
                             </span>
                         </div>
                     </div>
+                    <div className="relative inline-block text-left">
+                        <div>
+                            <button
+                                onClick={() => setMenuAbierto(!menuAbierto)}
+                                className="flex items-center text-sm font-medium text-gray-500 hover:text-gray-700 focus:outline-none"
+                            >
+                                <FaClock className="mr-1" />
+                                Intervalo de tiempo
+                                <FaAngleDown className={`ml-1 ${menuAbierto ? "transform rotate-180" : ""}`} />
+                            </button>
+
+                        </div>
+                        {menuAbierto && (
+                            <div className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+                                <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+                                    <button
+                                        onClick={() => handleFiltroTiempoChange("today")}
+                                        className={`block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 ${filtroTiempo === "today" ? "bg-gray-100 text-gray-900" : ""
+                                            }`}
+                                        role="menuitem"
+                                    >
+                                        Hoy
+                                    </button>
+                                    <button
+                                        onClick={() => handleFiltroTiempoChange("last7days")}
+                                        className={`block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 ${filtroTiempo === "last7days" ? "bg-gray-100 text-gray-900" : ""
+                                            }`}
+                                        role="menuitem"
+                                    >
+                                        Últimos 7 días
+                                    </button>
+                                    <button
+                                        onClick={() => handleFiltroTiempoChange("thisMonth")}
+                                        className={`block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 ${filtroTiempo === "thisMonth" ? "bg-gray-100 text-gray-900" : ""
+                                            }`}
+                                        role="menuitem"
+                                    >
+                                        Este mes
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+
                     <table {...getTableProps()} className="w-full mt-5 table-auto shadow-lg bg-white">
                         <thead className="bg-gray-800 text-slate-400">
                             {headerGroups.map((headerGroup) => (
@@ -206,7 +265,7 @@ const Tabla = () => {
                             ))}
                         </thead>
                         <tbody {...getTableBodyProps()}>
-                            {rows.map((row) => {
+                            {page.map((row) => {
                                 prepareRow(row);
                                 const { original } = row;
                                 return (
@@ -229,31 +288,21 @@ const Tabla = () => {
                         >
                             {"<<"}
                         </button>{" "}
-                        <button
-                            className="px-3 py-1 border rounded-md mr-2 hover:bg-gray-400 hover:text-white bg-gray-800 text-slate-400"
-                            onClick={() => previousPage()}
-                            disabled={!canPreviousPage}
-                        >
-                            {"<"}
-                        </button>{" "}
+
                         <span className="mr-2">
-                            Página{" "}
-                            <strong>
-                                {pageIndex + 1} de {page.length}
-                            </strong>
+                            |{" "}
+                            {rows.map((_, index) => (
+                                <button
+                                    key={index}
+                                    onClick={() => gotoPage(index)}
+                                    className={`px-3 py-1 border rounded-md mr-2 hover:bg-gray-400 hover:text-white ${pageIndex === index ? "bg-gray-800 text-slate-400" : ""
+                                        }`}
+                                >
+                                    {index + 1}
+                                </button>
+                            ))}
                         </span>
-                        <span className="mr-2">
-                            | Ir a la página:{" "}
-                            <input
-                                type="number"
-                                defaultValue={pageIndex + 1}
-                                onChange={(e) => {
-                                    const page = e.target.value ? Number(e.target.value) - 1 : 0;
-                                    gotoPage(page);
-                                }}
-                                className="w-16 px-2 py-1 border rounded-md text-center"
-                            />
-                        </span>{" "}
+
                         <select
                             className="px-2 py-1 border rounded-md mr-2"
                             value={pageSize}
@@ -261,19 +310,12 @@ const Tabla = () => {
                                 setPageSize(Number(e.target.value));
                             }}
                         >
-                            {[5, 10, 15, 20, 25, 30].map((pageSize) => (
+                            {[1, 10, 15, 20, 25, 30].map((pageSize) => (
                                 <option key={pageSize} value={pageSize}>
                                     Mostrar {pageSize}
                                 </option>
                             ))}
                         </select>
-                        <button
-                            className="px-3 py-1 border rounded-md mr-2 hover:bg-gray-400 hover:text-white bg-gray-800 text-slate-400"
-                            onClick={() => nextPage()}
-                            disabled={!canNextPage}
-                        >
-                            {">"}
-                        </button>{" "}
                         <button
                             className="px-3 py-1 border rounded-md hover:bg-gray-400 hover:text-white bg-gray-800 text-slate-400"
                             onClick={() => gotoPage(pageCount - 1)}
@@ -282,6 +324,12 @@ const Tabla = () => {
                             {">>"}
                         </button>{" "}
                     </div>
+                    <span className="mr-2">
+                        <strong>Página</strong>{" "}
+                        <strong>
+                            {pageIndex + 1} de {pageCount}
+                        </strong>
+                    </span>
 
                 </>
             )}

@@ -231,7 +231,7 @@ export const Formulario = ({ paciente }) => {
                     rules={{
                         required: 'Obligatory field',
                         pattern: {
-                            value: /^[0-9]{15}$/,
+                            value: /^[0-9]*$/,
                             message: 'Valid phone with 15 digits',
                         },
                     }}
@@ -306,22 +306,7 @@ export const Formulario = ({ paciente }) => {
                 />
             </div>
 
-            <div>
-                <label htmlFor="image" className="text-gray-700 uppercase font-bold text-sm">
-                    Patient photo:
-                </label>
-                <div className="mb-5 form-floating">
-                    <input
-                        className="form-control"
-                        id="image"
-                        type="file"
-                        placeholder="Select an image..."
-                        required
-                        name="image"
-                    />
-                    <label htmlFor="image">Image</label>
-                </div>
-            </div>
+          
 
             <input
                 type="submit"
