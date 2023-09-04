@@ -15,7 +15,7 @@ const Password = () => {
         e.preventDefault()
         if (Object.values(form).includes(""))
         {
-            setMensaje({ respuesta: "Todos los campos deben ser ingresados", tipo: false })
+            setMensaje({ respuesta: "All fields must be entered", tipo: false })
                 setTimeout(() => {
                     setMensaje({})
                 }, 3000);
@@ -24,7 +24,7 @@ const Password = () => {
 
 				if (form.passwordnuevo.length < 6)
         {
-            setMensaje({ respuesta: "El password debe tener mínimo 6 carácteres", tipo: false })
+            setMensaje({ respuesta: "The password must have a minimum of 6 characters", tipo: false })
                 setTimeout(() => {
                     setMensaje({})
                 }, 3000);
@@ -88,7 +88,7 @@ const Password = () => {
                 className='bg-gray-800 w-full p-3 
         text-slate-300 uppercase font-bold rounded-lg 
         hover:bg-gray-600 cursor-pointer transition-all'
-                value='Actualizar' />
+                value='Update' />
         </form>
         </>
     )

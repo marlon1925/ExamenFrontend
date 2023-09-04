@@ -250,7 +250,7 @@ const FormularioPerfil = () => {
             <input
                 type="submit"
                 className="bg-gray-800 w-full p-3 text-slate-300 uppercase font-bold rounded-lg hover:bg-gray-600 cursor-pointer transition-all"
-                value="Actualizar"
+                value="Update"
             />
         </form>
     );

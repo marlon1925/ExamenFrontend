@@ -38,9 +38,9 @@ const Visualizar = () => {
     return (
         <>
             <div>
-                <h1 className='font-black text-4xl text-gray-500'>Visualizar Paciente</h1>
+                <h1 className='font-black text-4xl text-gray-500'>View Patient</h1>
                 <hr className='my-4' />
-                <p className='mb-8'>Este módulo te permite visualizar los datos del paciente</p>
+                <p className='mb-8'>This module allows you to view patient data</p>
             </div>
             <div>
                 {
@@ -49,31 +49,31 @@ const Visualizar = () => {
                             <div className='m-5 flex justify-between'>
                                 <div>
                                     <p className="text-md text-gray-00 mt-4">
-                                        <span className="text-gray-600 uppercase font-bold">* Nombre del paciente: </span>
+                                        <span className="text-gray-600 uppercase font-bold">* Name of patient: </span>
                                         {paciente.nombre}
                                     </p>
                                     <p className="text-md text-gray-00 mt-4">
-                                        <span className="text-gray-600 uppercase font-bold">* Nombre del propietario: </span>
+                                        <span className="text-gray-600 uppercase font-bold">* Owner's Name: </span>
                                         {paciente.propietario}
                                     </p>
                                     <p className="text-md text-gray-00 mt-4">
-                                        <span className="text-gray-600 uppercase font-bold">* Email: </span>
+                                        <span className="text-gray-600 uppercase font-bold">* E-mail: </span>
                                         {paciente.email}
                                     </p>
                                     <p className="text-md text-gray-00 mt-4">
-                                        <span className="text-gray-600 uppercase font-bold">* Fecha de atención: </span>
+                                        <span className="text-gray-600 uppercase font-bold">* Date of attention: </span>
                                         {formatearFecha(paciente.ingreso)}
                                     </p>
                                     <p className="text-md text-gray-00 mt-4">
-                                        <span className="text-gray-600 uppercase font-bold">* Fecha de salida: </span>
+                                        <span className="text-gray-600 uppercase font-bold">* Departure date: </span>
                                         {formatearFecha(paciente.salida)}
                                     </p>
                                     <p className="text-md text-gray-00 mt-4">
-                                        <span className="text-gray-600 uppercase font-bold">* Estado: </span>
+                                        <span className="text-gray-600 uppercase font-bold">* State: </span>
                                         <span class="bg-blue-100 text-green-500 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">{paciente.estado && "activo"}</span>
                                     </p>
                                     <p className="text-md text-gray-00 mt-4">
-                                        <span className="text-gray-600 uppercase font-bold">* Síntomas: </span>
+                                        <span className="text-gray-600 uppercase font-bold">* Symptoms: </span>
                                         {paciente.sintomas}
                                     </p>
                                 </div>

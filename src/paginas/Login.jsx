@@ -25,7 +25,7 @@ const Login = () => {
             if (mensaje.response && mensaje.response.status === 404) {
                 // Cuenta no encontrada, muestra un mensaje de error
                 setMensaje({
-                    respuesta: "Cuenta ya existe",
+                    respuesta: "Account already exists",
                     tipo: false,
                 });
             } else {
@@ -63,7 +63,7 @@ const Login = () => {
                             control={control}
                             defaultValue=""
                             rules={{
-                                required: 'Campo Obligatorio',
+                                required: 'Obligatory field',
                                 pattern: {
                                     value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
                                     message: 'Invalid email'
@@ -87,7 +87,7 @@ const Login = () => {
                             name="password"
                             control={control}
                             defaultValue=""
-                            rules={{ required: 'Campo Obligatorio' }}
+                            rules={{ required: 'Obligatory field' }}
                             render={({ field }) => (
                                 <div className="mb-3">
                                     <label className="mb-2 block text-sm font-semibold">Password</label>

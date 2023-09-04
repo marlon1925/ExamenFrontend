@@ -49,7 +49,7 @@ export const Formulario = ({ paciente }) => {
 
             if (duplicado) {
                 setMensaje({
-                    respuesta: "Ya existe un paciente con el mismo nombre y dueño.",
+                    respuesta: "There is already a patient with the same name and owner.",
                     tipo: false,
                 });
                 return;
@@ -192,7 +192,7 @@ export const Formulario = ({ paciente }) => {
             <div>
                 <label
                     htmlFor='celular:'
-                    className='text-gray-700 uppercase font-bold text-sm'>Celular: </label>
+                    className='text-gray-700 uppercase font-bold text-sm'>Phone: </label>
                 <Controller
                     name='celular'
                     control={control}
@@ -240,9 +240,9 @@ export const Formulario = ({ paciente }) => {
                             <input
                                 {...field}
                                 type="number"
-                                className={`border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md mb-5 ${fieldState.invalid ? 'border-red-500' : ''
-                                    }`}
                                 placeholder='Enter the conventional number'
+                                className={`border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md mb-5 ${fieldState.invalid ? 'border-red-500' : ''
+                                    }`}                                
                             />
                             {fieldState.error && (
                                 <p className="text-red-500 text-sm">{fieldState.error.message}</p>
