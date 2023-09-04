@@ -3,13 +3,14 @@ import axios from "axios";
 import React from 'react';
 import Mensaje from "./Alertas/Mensaje";
 import { useNavigate } from "react-router-dom";
+import { format, parseISO, isValid, parse } from 'date-fns';
 import {
     useTable,
     useFilters,
     useGlobalFilter,
     usePagination,
 } from "react-table";
-import { FaTrashAlt, FaEdit, FaFolderOpen, FaClock, FaAngleDown } from "react-icons/fa";
+import { FaTrashAlt, FaEdit, FaFolderOpen, FaClock, FaAngleRight, FaAngleDoubleRight, FaAngleLeft, FaAngleDoubleLeft } from "react-icons/fa";
 
 
 const Tabla = () => {
@@ -18,11 +19,63 @@ const Tabla = () => {
     const [noMorePages, setNoMorePages] = useState(false);
     const [filtroTiempo, setFiltroTiempo] = useState("today");
     const [menuAbierto, setMenuAbierto] = useState(false);
+    const [fechaSeleccionada, setFechaSeleccionada] = useState(""); // Declaración de fechaSeleccionada
+    const [errorFecha, setErrorFecha] = useState(false);
+
+    function convertirFecha(fechaEnFormatoDDMMYYYY) {
+        // Parsear la fecha en formato "dd/MM/yyyy" a un objeto Date
+        const fechaParseada = parse(fechaEnFormatoDDMMYYYY, 'dd/MM/yyyy', new Date());
+
+        // Formatear la fecha en el formato deseado
+        const fechaFormateada = format(fechaParseada, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
+
+        return fechaFormateada;
+    }
 
     const handleFiltroTiempoChange = (nuevoFiltro) => {
         setFiltroTiempo(nuevoFiltro);
         setMenuAbierto(false);
+
+        if (nuevoFiltro === "today") {
+            // Obtener la fecha actual
+            const fechaActual = new Date();
+
+            // Filtrar los datos para mostrar solo los que tienen la fecha de "Departure" igual a la fecha actual
+            const datosFiltrados = pacientes.filter((paciente) => {
+                const fechaSalida = new Date(paciente.ingreso); // Asegúrate de que paciente.salida sea un formato de fecha válido
+
+                // Compara la fecha de "Departure" con la fecha actual (ignorando la hora, minutos y segundos)
+                return (
+                    fechaSalida.getDate() === fechaActual.getDate() &&
+                    fechaSalida.getMonth() === fechaActual.getMonth() &&
+                    fechaSalida.getFullYear() === fechaActual.getFullYear()
+                );
+            });
+
+            // Actualiza los datos que se muestran en la tabla con los datos filtrados
+            setPacientes(datosFiltrados);
+        } else if (nuevoFiltro === "customDate" && fechaSeleccionada) {
+            console.log(fechaSeleccionada)
+            const datosFiltrados = pacientes.filter((paciente) => {
+                const newDate = new Date(convertirFecha(fechaSeleccionada))
+                const fechaSalida = new Date(paciente.ingreso);
+                console.log(newDate)
+
+                return (
+                    fechaSalida.getDate() === newDate.getDate() &&
+                    fechaSalida.getMonth() === newDate.getMonth() &&
+                    fechaSalida.getFullYear() === newDate.getFullYear()
+                );
+            });
+            setPacientes(datosFiltrados);
+
+        }
+        else {
+            // Si no se seleccionó "Today", muestra todos los pacientes sin filtrar
+            listarPacientes();
+        }
     };
+
 
     const listarPacientes = async () => {
         try {
@@ -82,7 +135,6 @@ const Tabla = () => {
     };
 
     const data = React.useMemo(() => pacientes, [pacientes]);
-
     const columns = React.useMemo(
         () => [
             {
@@ -91,11 +143,11 @@ const Tabla = () => {
                 // Puedes utilizar un accessor personalizado para la numeración
             },
             {
-                Header: "Nombre",
+                Header: "Pet",
                 accessor: "nombre",
             },
             {
-                Header: "Propietario",
+                Header: "Owner",
                 accessor: "propietario",
             },
             {
@@ -103,21 +155,24 @@ const Tabla = () => {
                 accessor: "email",
             },
             {
-                Header: "Celular",
+                Header: "Cell phone",
                 accessor: "celular",
             },
             {
-                Header: "Estado",
-                accessor: "estado",
-                Cell: ({ value }) => (
-                    <span className={`bg-blue-100 text-green-500 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300 ${value ? 'visible' : 'invisible'}`}>
-                        {value ? 'activo' : ''}
-                    </span>
-                ),
+                Header: "Attention",
+                accessor: "ingreso",
+                Cell: ({ value }) => {
+                    console.log(value)
+                    const fechaSalida = parseISO(value);
+                    if (isValid(fechaSalida)) {
+                        return <span>{format(fechaSalida, "dd/MM/yyyy")}</span>;
+                    } else {
+                        return <span>Fecha no válida</span>;
+                    }
+                },
             },
-
             {
-                Header: "Acciones",
+                Header: "Actions",
                 accessor: "acciones",
                 Cell: ({ row }) => (
                     <div className="py-2 text-center">
@@ -150,7 +205,6 @@ const Tabla = () => {
         getTableProps,
         getTableBodyProps,
         headerGroups,
-        rows,
         prepareRow,
         setGlobalFilter,
         state: { globalFilter, pageIndex, pageSize },
@@ -161,6 +215,7 @@ const Tabla = () => {
         canPreviousPage,
         canNextPage,
         pageCount,
+        nextPage
     } = useTable(
         {
             columns,
@@ -216,7 +271,7 @@ const Tabla = () => {
                             >
                                 <FaClock className="mr-1" />
                                 Intervalo de tiempo
-                                <FaAngleDown className={`ml-1 ${menuAbierto ? "transform rotate-180" : ""}`} />
+                                <FaAngleRight className={`ml-1 ${menuAbierto ? "transform rotate-180" : ""}`} />
                             </button>
 
                         </div>
@@ -229,28 +284,51 @@ const Tabla = () => {
                                             }`}
                                         role="menuitem"
                                     >
-                                        Hoy
+                                        Today
                                     </button>
                                     <button
-                                        onClick={() => handleFiltroTiempoChange("last7days")}
-                                        className={`block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 ${filtroTiempo === "last7days" ? "bg-gray-100 text-gray-900" : ""
+                                        onClick={() => handleFiltroTiempoChange("all")}
+                                        className={`block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 ${filtroTiempo === "all" ? "bg-gray-100 text-gray-900" : ""
                                             }`}
                                         role="menuitem"
                                     >
-                                        Últimos 7 días
+                                        All
                                     </button>
                                     <button
-                                        onClick={() => handleFiltroTiempoChange("thisMonth")}
-                                        className={`block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 ${filtroTiempo === "thisMonth" ? "bg-gray-100 text-gray-900" : ""
+                                        onClick={() => handleFiltroTiempoChange("otherDate")}
+                                        className={`block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 ${filtroTiempo === "otherDate" ? "bg-gray-100 text-gray-900" : ""
                                             }`}
                                         role="menuitem"
                                     >
-                                        Este mes
+                                        Other Date
                                     </button>
                                 </div>
                             </div>
                         )}
                     </div>
+                    {filtroTiempo === "otherDate" && (
+                        <div className="absolute mt-2 right-0 w-72 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+                            <div className="p-4">
+                                <label htmlFor="fechaInput" className="block text-sm font-medium text-gray-700">
+                                    Select a Date:
+                                </label>
+                                <input
+                                    id="fechaInput"
+                                    type="text"
+                                    placeholder="dd/mm/yyyy"
+                                    className="w-full mt-2 px-3 py-2 border rounded-md text-gray-700 focus:outline-none focus:ring focus:border-blue-300"
+                                    value={fechaSeleccionada}
+                                    onChange={(e) => setFechaSeleccionada(e.target.value)}
+                                />
+                                <button
+                                    onClick={() => handleFiltroTiempoChange("customDate")}
+                                    className="mt-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:border-blue-300"
+                                >
+                                    Apply
+                                </button>
+                            </div>
+                        </div>
+                    )}
 
                     <table {...getTableProps()} className="w-full mt-5 table-auto shadow-lg bg-white">
                         <thead className="bg-gray-800 text-slate-400">
@@ -282,26 +360,35 @@ const Tabla = () => {
                     </table>
                     <div className="pagination flex items-center justify-center mt-4">
                         <button
-                            className="px-3 py-1 border rounded-md mr-2 hover:bg-gray-400 hover:text-white bg-blue-500 text-white"
+                            className="px-3 py-1 border rounded-md mr-2 hover:bg-gray-400 hover:text-white bg-gray-800 text-slate-400"
                             onClick={() => gotoPage(0)}
                             disabled={!canPreviousPage}
                         >
-                            {"<<"}
+                            {<FaAngleDoubleLeft />}
+                        </button>{" "}
+                        <button
+                            className="px-3 py-1 border rounded-md hover:bg-gray-400 hover:text-white bg-gray-800 text-slate-400"
+                            onClick={() => previousPage()}
+                            disabled={!canPreviousPage}
+                        >
+                            {<FaAngleLeft />}
                         </button>{" "}
 
+
                         <span className="mr-2">
-                            |{" "}
-                            {rows.map((_, index) => (
+                            {" | "}
+                            {Array.from({ length: pageCount }).map((_, page) => (
                                 <button
-                                    key={index}
-                                    onClick={() => gotoPage(index)}
-                                    className={`px-3 py-1 border rounded-md mr-2 hover:bg-gray-400 hover:text-white ${pageIndex === index ? "bg-gray-800 text-slate-400" : ""
+                                    key={page}
+                                    onClick={() => gotoPage(page)}
+                                    className={`px-3 py-1 border rounded-md mr-2 hover:bg-gray-400 hover:text-white ${pageIndex === page ? "bg-gray-800 text-slate-400" : ""
                                         }`}
                                 >
-                                    {index + 1}
+                                    {page + 1}
                                 </button>
                             ))}
                         </span>
+
 
                         <select
                             className="px-2 py-1 border rounded-md mr-2"
@@ -312,20 +399,27 @@ const Tabla = () => {
                         >
                             {[1, 10, 15, 20, 25, 30].map((pageSize) => (
                                 <option key={pageSize} value={pageSize}>
-                                    Mostrar {pageSize}
+                                    Show {pageSize}
                                 </option>
                             ))}
                         </select>
                         <button
                             className="px-3 py-1 border rounded-md hover:bg-gray-400 hover:text-white bg-gray-800 text-slate-400"
+                            onClick={() => nextPage()}
+                            disabled={!canNextPage}
+                        >
+                            {<FaAngleRight />}
+                        </button>{" "}
+                        <button
+                            className="px-3 py-1 border rounded-md hover:bg-gray-400 hover:text-white bg-gray-800 text-slate-400"
                             onClick={() => gotoPage(pageCount - 1)}
                             disabled={!canNextPage}
                         >
-                            {">>"}
+                            {<FaAngleDoubleRight />}
                         </button>{" "}
                     </div>
                     <span className="mr-2">
-                        <strong>Página</strong>{" "}
+                        <strong>Page</strong>{" "}
                         <strong>
                             {pageIndex + 1} de {pageCount}
                         </strong>

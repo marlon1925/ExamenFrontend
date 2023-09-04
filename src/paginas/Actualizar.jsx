@@ -10,6 +10,7 @@ const Actualizar = () => {
     const { id } = useParams()
     const [paciente, setPaciente] = useState({})
     const [mensaje, setMensaje] = useState({})
+    const [isEditMode, setIsEditMode] = useState(false);
 
     useEffect(() => {
         const consultarPaciente = async () => {
@@ -23,33 +24,34 @@ const Actualizar = () => {
                     }
                 }
                 const respuesta = await axios.get(url, options)
-                setPaciente(respuesta.data)
+                setPaciente(respuesta.data);
+                setIsEditMode(true); // Establecer el modo de edición en true
             } catch (error) {
                 setMensaje({ respuesta: error.response.data.msg, tipo: false })
             }
         }
         consultarPaciente()
     }, [])
-   
+
 
     return (
         <div>
-        <h1 className='font-black text-4xl text-gray-500'>Updated Patient</h1>
-        <hr className='my-4' />
-        <p className='mb-8'>This module allows you to update the data of a registered patient</p>
-        {
-            Object.keys(paciente).length != 0 ?
-                (
-                    <Formulario paciente={paciente}/>
-                )
-                :
-                (
-                    Object.keys(mensaje).length > 0 && <Mensaje tipo={mensaje.tipo}>{mensaje.respuesta}</Mensaje>
-                )
-        }
-    </div>
+            <h1 className='font-black text-4xl text-gray-500'>Updated Patient</h1>
+            <hr className='my-4' />
+            <p className='mb-8'>This module allows you to update the data of a registered patient</p>
+            {
+                Object.keys(paciente).length != 0 ?
+                    (
+                        <Formulario paciente={paciente} isEditMode={isEditMode}/>
+                    )
+                    :
+                    (
+                        Object.keys(mensaje).length > 0 && <Mensaje tipo={mensaje.tipo}>{mensaje.respuesta}</Mensaje>
+                    )
+            }
+        </div>
 
-)
+    )
 }
 
 export default Actualizar

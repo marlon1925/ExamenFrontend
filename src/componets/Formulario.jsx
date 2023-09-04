@@ -5,12 +5,13 @@ import AuthContext from "../context/AuthProvider"
 import axios from 'axios';
 import Mensaje from "./Alertas/Mensaje";
 
-export const Formulario = ({ paciente }) => {
+export const Formulario = ({ paciente, isEditMode }) => {
 
     const { auth } = useContext(AuthContext);
     const navigate = useNavigate();
     const { handleSubmit, control, setValue } = useForm();
     const [mensaje, setMensaje] = useState({});
+    console.log(isEditMode)
 
     useEffect(() => {
         if (paciente) {
@@ -41,11 +42,16 @@ export const Formulario = ({ paciente }) => {
             const pacientesExistente = response.data;
 
             // validar paciente duplicado
-            const duplicado = pacientesExistente.some(
-                (pacienteExistente) =>
-                    pacienteExistente.nombre.toLowerCase() === data.nombre.toLowerCase() &&
-                    pacienteExistente.propietario.toLowerCase() === data.propietario.toLowerCase()
-            );
+            const duplicado = pacientesExistente.some((pacienteExistente) => {
+                if (!isEditMode) {
+                    // Aquí, verifica la condición si NO estás en modo de edición
+                    return (
+                        pacienteExistente.nombre.toLowerCase() === data.nombre.toLowerCase() &&
+                        pacienteExistente.propietario.toLowerCase() === data.propietario.toLowerCase()
+                    );
+                } 
+            });
+
 
             if (duplicado) {
                 setMensaje({
@@ -113,8 +119,9 @@ export const Formulario = ({ paciente }) => {
                                 type="text"
                                 className={`border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md mb-5 ${fieldState.invalid ? 'border-red-500' : ''
                                     }`}
-                                placeholder='The pets name'
+                                placeholder='The pet name'
                                 maxLength={20}
+                                disabled={isEditMode} // Deshabilitar el campo si está en modo de edición
                             />
                             {fieldState.error && (
                                 <p className="text-red-500 text-sm">{fieldState.error.message}</p>
@@ -137,6 +144,7 @@ export const Formulario = ({ paciente }) => {
                         pattern: {
                             value: /^[A-Za-z\s]+$/,
                             message: 'Only letters are accepted',
+
                         }
                     }}
                     render={({ field, fieldState }) => (
@@ -147,6 +155,7 @@ export const Formulario = ({ paciente }) => {
                                 className={`border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md mb-5 ${fieldState.invalid ? 'border-red-500' : ''
                                     }`}
                                 placeholder='Enter owner name'
+                                disabled={isEditMode} // Deshabilitar el campo si está en modo de edición
                                 maxLength={20}
                             />
                             {fieldState.error && (
@@ -200,7 +209,7 @@ export const Formulario = ({ paciente }) => {
                     rules={{
                         required: 'Obligatory field',
                         pattern: {
-                            value: /^[0-9]*$/,
+                            value: /^[0-9]{10}$/,
                             message: 'Valid phone with 10 digits',
                         }
                     }}
@@ -231,8 +240,8 @@ export const Formulario = ({ paciente }) => {
                     rules={{
                         required: 'Obligatory field',
                         pattern: {
-                            value: /^[0-9]*$/,
-                            message: 'Valid phone with 15 digits',
+                            value: /^[0-9]{9}$/,
+                            message: 'Valid phone with 9 digits',
                         },
                     }}
                     render={({ field, fieldState }) => (
@@ -242,7 +251,7 @@ export const Formulario = ({ paciente }) => {
                                 type="number"
                                 placeholder='Enter the conventional number'
                                 className={`border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md mb-5 ${fieldState.invalid ? 'border-red-500' : ''
-                                    }`}                                
+                                    }`}
                             />
                             {fieldState.error && (
                                 <p className="text-red-500 text-sm">{fieldState.error.message}</p>
@@ -254,13 +263,13 @@ export const Formulario = ({ paciente }) => {
             <div>
                 <label
                     htmlFor='Salida:'
-                    className='text-gray-700 uppercase font-bold text-sm'>Departure date: </label>
+                    className='text-gray-700 uppercase font-bold text-sm'>Fecha de salida: </label>
                 <Controller
                     name='salida'
                     control={control}
                     defaultValue=''
                     rules={{
-                        required: 'Obligatory field',
+                        required: 'Este campo es obligatorio',
                     }}
                     render={({ field, fieldState }) => (
                         <div>
@@ -269,7 +278,7 @@ export const Formulario = ({ paciente }) => {
                                 type="date"
                                 className={`border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md mb-5 ${fieldState.invalid ? 'border-red-500' : ''
                                     }`}
-                                placeholder='Enter the departure date'
+                                placeholder='salida'
                             />
                             {fieldState.error && (
                                 <p className="text-red-500 text-sm">{fieldState.error.message}</p>
@@ -306,7 +315,7 @@ export const Formulario = ({ paciente }) => {
                 />
             </div>
 
-          
+
 
             <input
                 type="submit"
@@ -317,4 +326,3 @@ export const Formulario = ({ paciente }) => {
         </form>
     )
 }
- 
