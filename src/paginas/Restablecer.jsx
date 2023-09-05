@@ -94,7 +94,7 @@ const Restablecer = () => {
                                 render={({ field }) => (
                                     <>
                                         <input
-                                            id='passwordactual'
+                                            id='newpassword'
                                             type={showPassword ? 'text' : 'password'}
                                             className={`border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md mb-2 ${errors.passwordactual ? 'border-red-500' : 'border-gray-300'
                                                 } pr-10`}
@@ -141,7 +141,7 @@ const Restablecer = () => {
                                 render={({ field }) => (
                                     <>
                                         <input
-                                            id='passwordnuevo'
+                                            id='repeatpassword'
                                             type={showPassword ? 'text' : 'password'}
                                             className={`border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md mb-2 ${errors.passwordnuevo ? 'border-red-500' : 'border-gray-300'
                                                 } pr-10`}
