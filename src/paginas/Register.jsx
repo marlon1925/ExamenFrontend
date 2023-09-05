@@ -101,7 +101,7 @@ export const Register = () => {
                                 control={control}
                                 defaultValue={form.nombre}
                                 rules={{
-                                    required: 'Obligatory field',
+                                    required: 'Required field',
                                     pattern: {
                                         value: /^[A-Za-z\s]+$/,
                                         message: 'Only letters are accepted',
@@ -136,7 +136,7 @@ export const Register = () => {
                                 control={control}
                                 defaultValue={form.apellido}
                                 rules={{
-                                    required: "Obligatory field",
+                                    required: "Required field",
                                     pattern: {
                                         value: /^[A-Za-z\s]+$/,
                                         message: 'Only letters are accepted',
@@ -173,7 +173,7 @@ export const Register = () => {
                                 control={control}
                                 defaultValue={form.direccion}
                                 rules={{
-                                    required: "Obligatory field"
+                                    required: "Required field"
                                 }}
                                 render={({ field }) => (
                                     <div className="mb-3">
@@ -206,7 +206,7 @@ export const Register = () => {
                                 control={control}
                                 defaultValue={form.telefono}
                                 rules={{
-                                    required: "Obligatory field",
+                                    required: "Required field",
                                     pattern: {
                                         value: /^[0-9]{10}$/,
                                         message: 'Valid phone with 10 digits',
@@ -242,7 +242,7 @@ export const Register = () => {
                                 control={control}
                                 defaultValue={form.email}
                                 rules={{
-                                    required: "Obligatory field",
+                                    required: "Required field",
                                     pattern: {
                                         value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
                                         message: "Invalid email",

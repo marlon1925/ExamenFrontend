@@ -106,7 +106,7 @@ export const Formulario = ({ paciente, isEditMode }) => {
                     control={control}
                     defaultValue=''
                     rules={{
-                        required: 'Obligatory field',
+                        required: 'Required field',
                         pattern: {
                             value: /^[A-Za-z\s]+$/,
                             message: 'Only letters are accepted',
@@ -140,7 +140,7 @@ export const Formulario = ({ paciente, isEditMode }) => {
                     control={control}
                     defaultValue=''
                     rules={{
-                        required: 'Obligatory field',
+                        required: 'Required field',
                         pattern: {
                             value: /^[A-Za-z\s]+$/,
                             message: 'Only letters are accepted',
@@ -174,7 +174,7 @@ export const Formulario = ({ paciente, isEditMode }) => {
                     control={control}
                     defaultValue=''
                     rules={{
-                        required: 'Obligatory field',
+                        required: 'Required field',
                         pattern: {
                             value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
                             message: 'Invalid email',
@@ -207,7 +207,7 @@ export const Formulario = ({ paciente, isEditMode }) => {
                     control={control}
                     defaultValue=''
                     rules={{
-                        required: 'Obligatory field',
+                        required: 'Required field',
                         pattern: {
                             value: /^[0-9]{10}$/,
                             message: 'Valid phone with 10 digits',
@@ -238,7 +238,7 @@ export const Formulario = ({ paciente, isEditMode }) => {
                     control={control}
                     defaultValue=''
                     rules={{
-                        required: 'Obligatory field',
+                        required: 'Required field',
                         pattern: {
                             value: /^[0-9]{9}$/,
                             message: 'Valid phone with 9 digits',
@@ -269,7 +269,7 @@ export const Formulario = ({ paciente, isEditMode }) => {
                     control={control}
                     defaultValue=''
                     rules={{
-                        required: 'Obligatory field',
+                        required: 'Required field',
                     }}
                     render={({ field, fieldState }) => (
                         <div>
@@ -296,7 +296,7 @@ export const Formulario = ({ paciente, isEditMode }) => {
                     control={control}
                     defaultValue=''
                     rules={{
-                        required: 'Obligatory field'
+                        required: 'Required field'
                     }}
                     render={({ field, fieldState }) => (
                         <div>

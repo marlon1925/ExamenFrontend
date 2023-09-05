@@ -33,7 +33,7 @@ const FormularioPerfil = () => {
 
     const onSubmit = async (data) => {
         if (Object.values(data).includes("")) {
-            setMensaje({ respuesta: "Obligatory field", tipo: false });
+            setMensaje({ respuesta: "Required field", tipo: false });
             setTimeout(() => {
                 setMensaje({});
             }, 3000);
@@ -74,7 +74,7 @@ const FormularioPerfil = () => {
                     control={control}
                     defaultValue=""
                     rules={{
-                        required: 'Obligatory field',
+                        required: 'Required field',
                         pattern: {
                             value: /^[A-Za-z\s]+$/,
                             message: 'Only letters are accepted',
@@ -109,7 +109,7 @@ const FormularioPerfil = () => {
                     control={control}
                     defaultValue=""
                     rules={{
-                        required: "Obligatory field",
+                        required: "Required field",
                         pattern: {
                             value: /^[A-Za-z\s]+$/,
                             message: 'Only letters are accepted',
@@ -147,7 +147,7 @@ const FormularioPerfil = () => {
                     control={control}
                     defaultValue=""
                     rules={{
-                        required: "Obligatory field"
+                        required: "Required field"
                     }}
                     render={({ field }) => (
                         <div className="mb-3">
@@ -183,7 +183,7 @@ const FormularioPerfil = () => {
                     control={control}
                     defaultValue=""
                     rules={{
-                        required: "Obligatory field",
+                        required: "Required field",
                         pattern: {
                             value: /^[0-9]{10}$/,
                             message: 'Valid phone with 10 digits',
@@ -219,7 +219,7 @@ const FormularioPerfil = () => {
                     control={control}
                     defaultValue=""
                     rules={{
-                        required: "Obligatory field",
+                        required: "Required field",
                         pattern: {
                             value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
                             message: "Invalid email",
