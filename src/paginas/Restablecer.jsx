@@ -51,7 +51,13 @@ const Restablecer = () => {
             setMensaje({ respuesta: error.response.data.msg, tipo: false })
         }
     }
-
+    const validateConfirmPassword = (value) => {
+        const newPassword = getValues('passwordnuevo');
+        if (value !== newPassword) {
+            return 'Passwords do not match';
+        }
+        return true;
+    };
     return (
         <div className="flex flex-col items-center justify-center">
             {Object.keys(mensaje).length > 0 && <Mensaje tipo={mensaje.tipo}>{mensaje.respuesta}</Mensaje>}
@@ -97,7 +103,7 @@ const Restablecer = () => {
                                                 } pr-10`}
                                             placeholder='**************'
                                             {...field}
-                                            onChange={()=>handleChange}
+                                            onChange={() => handleChange}
                                         />
                                         <button
                                             type="button"
@@ -134,8 +140,8 @@ const Restablecer = () => {
                                             className={`border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md mb-2 ${errors.repeatpassword ? 'border-red-500' : 'border-gray-300'
                                                 } pr-10`}
                                             placeholder='**************'
-                                            {...field} 
-                                            onChange={()=>handleChange}
+                                            {...field}
+                                            onChange={() => handleChange}
 
                                         />
                                         <button
