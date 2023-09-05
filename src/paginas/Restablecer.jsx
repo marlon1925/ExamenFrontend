@@ -1,52 +1,77 @@
-import logoDog from '../assets/dog-hand.webp'
-import { Link } from 'react-router-dom'
-import Mensaje from '../componets/Alertas/Mensaje'
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { Controller, useForm } from 'react-hook-form';
-
+import Mensaje from '../componets/Alertas/Mensaje';
+import logoDog from '../assets/dog-hand.webp';
+import { Link } from 'react-router-dom';
 
 const Restablecer = () => {
     const { token } = useParams();
     const [mensaje, setMensaje] = useState({});
     const [tokenback, setTokenBack] = useState(false);
-    const { control, formState: { errors } } = useForm();
+    const { control, handleSubmit, formState: { errors }, getValues } = useForm();
     const [showPassword, setShowPassword] = useState(false);
 
     const verifyToken = async () => {
         try {
-            const url = `${import.meta.env.VITE_BACKEND_URL}/recuperar-password/${token}`
-            const respuesta = await axios.get(url)
-            setTokenBack(true)
-            setMensaje({ respuesta: respuesta.data.msg, tipo: true })
+            const url = `${import.meta.env.VITE_BACKEND_URL}/recuperar-password/${token}`;
+            const respuesta = await axios.get(url);
+            setTokenBack(true);
+            setMensaje({ respuesta: respuesta.data.msg, tipo: true });
         } catch (error) {
-            setMensaje({ respuesta: error.response.data.msg, tipo: false })
+            setMensaje({ respuesta: error.response.data.msg, tipo: false });
         }
-    }
+    };
+
     useEffect(() => {
-        verifyToken()
-    }, [])
+        verifyToken();
+    }, []);
 
     const [form, setForm] = useState({
-        password: "",
-        confirmpassword: ""
-    })
+        passwordactual: "",
+        passwordnuevo: "",
+    });
 
+    const onSubmit = async () => {
+        const { passwordactual, passwordnuevo } = getValues();
 
-    const handleSubmit = async (e) => {
-        e.preventDefault()
-        try {
-            const url = `${import.meta.env.VITE_BACKEND_URL}/nuevo-password/${token}`
-            const respuesta = await axios.post(url, form)
-            setForm({})
-            setMensaje({ respuesta: respuesta.data.msg, tipo: true })
-        } catch (error) {
-            setMensaje({ respuesta: error.response.data.msg, tipo: false })
+        if (passwordactual === "" || passwordnuevo === "") {
+            setMensaje({ respuesta: "All fields must be entered", tipo: false });
+            return;
         }
-    }
+
+        if (passwordnuevo.length < 8) {
+            setMensaje({ respuesta: "Password must be at least 8 characters long", tipo: false });
+            return;
+        }
+
+        if (!/(?=.*[A-Z])/.test(passwordnuevo)) {
+            setMensaje({ respuesta: "Password must contain at least one uppercase letter", tipo: false });
+            return;
+        }
+
+        if (!/(?=.*[^A-Za-z0-9])/.test(passwordnuevo)) {
+            setMensaje({ respuesta: "Password must contain at least one special character", tipo: false });
+            return;
+        }
+
+        if (passwordactual !== passwordnuevo) {
+            setMensaje({ respuesta: "Passwords do not match", tipo: false });
+            return;
+        }
+
+        try {
+            const url = `${import.meta.env.VITE_BACKEND_URL}/nuevo-password/${token}`;
+            const respuesta = await axios.post(url, form);
+            setForm({ passwordactual: "", passwordnuevo: "" });
+            setMensaje({ respuesta: respuesta.data.msg, tipo: true });
+        } catch (error) {
+            setMensaje({ respuesta: error.response.data.msg, tipo: false });
+        }
+    };
 
     return (
         <div className="flex flex-col items-center justify-center">
@@ -54,10 +79,10 @@ const Restablecer = () => {
             <h1 className="text-3xl font-semibold mb-2 text-center uppercase  text-gray-500">Welcome again</h1>
             <small className="text-gray-400 block my-4 text-sm">Please enter your details</small>
             <img className="object-cover h-80 w-80 rounded-full border-4 border-solid border-slate-600" src={logoDog} alt="image description" />
-            {tokenback &&
-                <form className='w-full' onSubmit={handleSubmit}>
+            {tokenback && (
+                <form className='w-full' onSubmit={handleSubmit(onSubmit)}>
                     <div className="mb-1">
-                        <label className="mb-2 block text-sm font-semibold">Current password</label>
+                        <label className="mb-2 block text-sm font-semibold">New password</label>
                         <div className="relative">
                             <Controller
                                 name="passwordactual"
@@ -91,7 +116,7 @@ const Restablecer = () => {
                             )}
                         </div>
 
-                        <label className="mb-2 block text-sm font-semibold">New password</label>
+                        <label className="mb-2 block text-sm font-semibold">Repeat password</label>
                         <div className="relative">
                             <Controller
                                 name="passwordnuevo"
@@ -139,22 +164,19 @@ const Restablecer = () => {
                         </div>
                     </div>
 
-
                     <div className="mb-3">
-                        <button className="bg-gray-600 text-slate-300 border py-2 w-full rounded-xl mt-5 hover:scale-105 duration-300 hover:bg-gray-900 hover:text-white">Send
-                        </button>
+                        <button className="bg-gray-600 text-slate-300 border py-2 w-full rounded-xl mt-5 hover:scale-105 duration-300 hover:bg-gray-900 hover:text-white">Send</button>
                     </div>
                 </form>
-            }
+            )}
 
             <div className="flex flex-col items-center justify-center">
                 {Object.keys(mensaje).length > 0 && <Mensaje tipo={mensaje.tipo}>{mensaje.respuesta}</Mensaje>}
                 <p className="md:text-lg lg:text-xl text-gray-600 mt-8">You can now Log in</p>
                 <Link to="/login" className="p-3 m-5 w-full text-center bg-gray-600 text-slate-300 border rounded-xl hover:scale-110 duration-300 hover:bg-gray-900 hover:text-white">Login</Link>
             </div>
-
         </div>
-    )
-}
+    );
+};
 
-export default Restablecer
+export default Restablecer;
