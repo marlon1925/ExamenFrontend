@@ -88,7 +88,7 @@ const Login = () => {
                             name="password"
                             control={control}
                             defaultValue=""
-                            rules={{ required: 'Campo obligatorio' }}
+                            rules={{ required: 'Required field' }}
                             render={({ field }) => (
                                 <div className="mb-3">
                                     <label className="mb-2 block text-sm font-semibold">Contraseña</label>
