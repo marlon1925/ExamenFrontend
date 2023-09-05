@@ -121,7 +121,7 @@ export const Formulario = ({ paciente, isEditMode }) => {
                                     }`}
                                 placeholder='The pet name'
                                 maxLength={20}
-                                disabled={isEditMode} // Deshabilitar el campo si está en modo de edición
+                                disabled={isEditMode}
                             />
                             {fieldState.error && (
                                 <p className="text-red-500 text-sm">{fieldState.error.message}</p>
@@ -155,7 +155,7 @@ export const Formulario = ({ paciente, isEditMode }) => {
                                 className={`border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md mb-5 ${fieldState.invalid ? 'border-red-500' : ''
                                     }`}
                                 placeholder='Enter owner name'
-                                disabled={isEditMode} // Deshabilitar el campo si está en modo de edición
+                                disabled={isEditMode}
                                 maxLength={20}
                             />
                             {fieldState.error && (
@@ -263,13 +263,13 @@ export const Formulario = ({ paciente, isEditMode }) => {
             <div>
                 <label
                     htmlFor='Salida:'
-                    className='text-gray-700 uppercase font-bold text-sm'>Fecha de salida: </label>
+                    className='text-gray-700 uppercase font-bold text-sm'>Departure date: </label>
                 <Controller
                     name='salida'
                     control={control}
                     defaultValue=''
                     rules={{
-                        required: 'Este campo es obligatorio',
+                        required: 'Obligatory field',
                     }}
                     render={({ field, fieldState }) => (
                         <div>

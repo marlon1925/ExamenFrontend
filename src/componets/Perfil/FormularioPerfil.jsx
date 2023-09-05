@@ -33,7 +33,7 @@ const FormularioPerfil = () => {
 
     const onSubmit = async (data) => {
         if (Object.values(data).includes("")) {
-            setMensaje({ respuesta: "Todos los campos deben ser ingresados", tipo: false });
+            setMensaje({ respuesta: "Obligatory field", tipo: false });
             setTimeout(() => {
                 setMensaje({});
             }, 3000);
