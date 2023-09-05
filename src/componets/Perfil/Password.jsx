@@ -35,25 +35,7 @@ const Password = () => {
         }, 3000);
         reset();
     };
-    const validatePassword = (password) => {
-        // Requiere al menos 8 caracteres
-        if (password.length < 8) {
-            return false;
-        }
-
-        // Requiere al menos una mayúscula
-        if (!/[A-Z]/.test(password)) {
-            return false;
-        }
-
-        // Requiere al menos un carácter especial (puedes personalizar esta expresión regular)
-        if (!/[!@#$%^&*()_+[\]{};':"\\|,.<>/?]+/.test(password)) {
-            return false;
-        }
-
-        return true;
-    };
-
+   
     return (
         <>
             <div className='mt-5'>

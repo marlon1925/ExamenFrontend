@@ -11,6 +11,7 @@ import { Link } from 'react-router-dom';
 const Restablecer = () => {
     const { token } = useParams();
     const [mensaje, setMensaje] = useState({});
+    const { actualizarPassword } = useContext(AuthContext);
     const [tokenback, setTokenBack] = useState(false);
     const { control, formState: { errors }, handleSubmit, reset, getValues } = useForm();
     const [showPassword, setShowPassword] = useState(false);
@@ -33,22 +34,24 @@ const Restablecer = () => {
     useEffect(() => {
         verifyToken();
     }, []);
-    const [form, setForm] = useState({
-        passwordnuevo: "",
-        repeatpassword: ""
-    })
-
     const onSubmit = async (data) => {
-        e.preventDefault()
-        try {
-            const url = `${import.meta.env.VITE_BACKEND_URL}/nuevo-password/${token}`
-            const respuesta = await axios.post(url, form)
-            setForm({})
-            setMensaje({ respuesta: respuesta.data.msg, tipo: true })
-        } catch (error) {
-            setMensaje({ respuesta: error.response.data.msg, tipo: false })
+        if (data.passwordnuevo === "" || data.repeatpassword === "") {
+            setMensaje({ respuesta: "All fields must be entered", tipo: false });
+            setTimeout(() => {
+                setMensaje({});
+            }, 3000);
+            return;
         }
-    }
+
+        const resultado = await actualizarPassword(data);
+        setMensaje(resultado);
+        setTimeout(() => {
+            setMensaje({});
+        }, 3000);
+        reset();
+    };
+
+
 
 
     const validateConfirmPassword = (value) => {
@@ -66,7 +69,7 @@ const Restablecer = () => {
             <small className="text-gray-400 block my-4 text-sm">Please enter your details</small>
             <img className="object-cover h-80 w-80 rounded-full border-4 border-solid border-slate-600" src={logoDog} alt="image description" />
             {tokenback && (
-                <form className='w-full' onSubmit={handleSubmit(onSubmit)}>
+                <form onSubmit={handleSubmit(onSubmit)}>
                     <div className="mb-1">
                         <label className="mb-2 block text-sm font-semibold">New password</label>
                         <div className="relative">
@@ -159,7 +162,12 @@ const Restablecer = () => {
                     </div>
 
                     <div className="mb-3">
-                        <button className="bg-gray-600 text-slate-300 border py-2 w-full rounded-xl mt-5 hover:scale-105 duration-300 hover-bg-gray-900 hover:text-white">Send</button>
+                        <input
+                            type="submit"
+                            className='bg-gray-800 w-full p-3 
+        text-slate-300 uppercase font-bold rounded-lg 
+        hover:bg-gray-600 cursor-pointer transition-all'
+                            value='Actualizar' />
                     </div>
                 </form>
             )}
