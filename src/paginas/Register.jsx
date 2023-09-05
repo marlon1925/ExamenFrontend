@@ -70,7 +70,7 @@ export const Register = () => {
                                 control={control}
                                 defaultValue=""
                                 rules={{
-                                    required: 'Campo Obligatorio',
+                                    required: 'Obligatory field',
                                     pattern: {
                                         value: /^[A-Za-z\s]+$/,
                                         message: 'Only letters are accepted',
