@@ -43,7 +43,7 @@ const Restablecer = () => {
             return;
         }
 
-        if (passwordnuevo.length >= 8) {
+        if ( passwordnuevo&&passwordnuevo.length >= 8) {
             setMensaje({ respuesta: "Password must be at least 8 characters long", tipo: false });
             return;
         }
