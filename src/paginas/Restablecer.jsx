@@ -12,7 +12,7 @@ const Restablecer = () => {
     const { token } = useParams();
     const [mensaje, setMensaje] = useState({});
     const [tokenback, setTokenBack] = useState(false);
-    const { control, handleSubmit, formState: { errors }, getValues } = useForm();
+    const { control, handleSubmit, formState: { errors }, getValues, reset } = useForm();
     const [showPassword, setShowPassword] = useState(false);
 
     const verifyToken = async () => {
@@ -30,43 +30,18 @@ const Restablecer = () => {
         verifyToken();
     }, []);
 
-    const [form, setForm] = useState({
-        passwordactual: "",
-        passwordnuevo: "",
-    });
+    const onSubmit = async (data) => {
+        const { passwordactual, passwordnuevo, repeatpassword } = data;
 
-    const onSubmit = async () => {
-        const { passwordactual, passwordnuevo } = getValues();
-
-        if (passwordactual === "" || passwordnuevo === "") {
-            setMensaje({ respuesta: "All fields must be entered", tipo: false });
-            return;
-        }
-
-        if ( passwordnuevo&&passwordnuevo.length >= 8) {
-            setMensaje({ respuesta: "Password must be at least 8 characters long", tipo: false });
-            return;
-        }
-
-        if (!/(?=.*[A-Z])/.test(passwordnuevo)) {
-            setMensaje({ respuesta: "Password must contain at least one uppercase letter", tipo: false });
-            return;
-        }
-
-        if (!/(?=.*[^A-Za-z0-9])/.test(passwordnuevo)) {
-            setMensaje({ respuesta: "Password must contain at least one special character", tipo: false });
-            return;
-        }
-
-        if (passwordactual !== passwordnuevo) {
+        if (passwordnuevo !== repeatpassword) {
             setMensaje({ respuesta: "Passwords do not match", tipo: false });
             return;
         }
 
         try {
             const url = `${import.meta.env.VITE_BACKEND_URL}/nuevo-password/${token}`;
-            const respuesta = await axios.post(url, form);
-            setForm({ passwordactual: "", passwordnuevo: "" });
+            const respuesta = await axios.post(url, { passwordactual, passwordnuevo });
+            reset(); // Resetea el formulario después de enviar
             setMensaje({ respuesta: respuesta.data.msg, tipo: true });
         } catch (error) {
             setMensaje({ respuesta: error.response.data.msg, tipo: false });
@@ -85,41 +60,7 @@ const Restablecer = () => {
                         <label className="mb-2 block text-sm font-semibold">New password</label>
                         <div className="relative">
                             <Controller
-                                name="newpassword"
-                                control={control}
-                                defaultValue=""
-                                rules={{
-                                    required: 'Current password is required',
-                                }}
-                                render={({ field }) => (
-                                    <>
-                                        <input
-                                            id='newpassword'
-                                            type={showPassword ? 'text' : 'password'}
-                                            className={`border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md mb-2 ${errors.passwordactual ? 'border-red-500' : 'border-gray-300'
-                                                } pr-10`}
-                                            placeholder='**************'
-                                            {...field}
-                                        />
-                                        <button
-                                            type="button"
-                                            onClick={() => setShowPassword(!showPassword)}
-                                            className="absolute inset-y-0 right-0 flex items-center justify-center focus:outline-none pr-2"
-                                        >
-                                            <FontAwesomeIcon icon={showPassword ? faEye : faEyeSlash} />
-                                        </button>
-                                    </>
-                                )}
-                            />
-                            {errors.passwordactual && (
-                                <p className="text-red-500 text-sm">{errors.passwordactual.message}</p>
-                            )}
-                        </div>
-
-                        <label className="mb-2 block text-sm font-semibold">Repeat password</label>
-                        <div className="relative">
-                            <Controller
-                                name="repeatpassword"
+                                name="passwordnuevo"
                                 control={control}
                                 defaultValue=""
                                 rules={{
@@ -141,7 +82,7 @@ const Restablecer = () => {
                                 render={({ field }) => (
                                     <>
                                         <input
-                                            id='repeatpassword'
+                                            id='passwordnuevo'
                                             type={showPassword ? 'text' : 'password'}
                                             className={`border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md mb-2 ${errors.passwordnuevo ? 'border-red-500' : 'border-gray-300'
                                                 } pr-10`}
@@ -160,6 +101,40 @@ const Restablecer = () => {
                             />
                             {errors.passwordnuevo && (
                                 <p className="text-red-500 text-sm">{errors.passwordnuevo.message}</p>
+                            )}
+                        </div>
+
+                        <label className="mb-2 block text-sm font-semibold">Repeat password</label>
+                        <div className="relative">
+                            <Controller
+                                name="repeatpassword"
+                                control={control}
+                                defaultValue=""
+                                rules={{
+                                    required: 'Repeat password is required',
+                                }}
+                                render={({ field }) => (
+                                    <>
+                                        <input
+                                            id='repeatpassword'
+                                            type={showPassword ? 'text' : 'password'}
+                                            className={`border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md mb-2 ${errors.repeatpassword ? 'border-red-500' : 'border-gray-300'
+                                                } pr-10`}
+                                            placeholder='**************'
+                                            {...field}
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowPassword(!showPassword)}
+                                            className="absolute inset-y-0 right-0 flex items-center justify-center focus:outline-none pr-2"
+                                        >
+                                            <FontAwesomeIcon icon={showPassword ? faEye : faEyeSlash} />
+                                        </button>
+                                    </>
+                                )}
+                            />
+                            {errors.repeatpassword && (
+                                <p className="text-red-500 text-sm">{errors.repeatpassword.message}</p>
                             )}
                         </div>
                     </div>
