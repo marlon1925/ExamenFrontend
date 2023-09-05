@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -12,8 +12,9 @@ const Restablecer = () => {
     const { token } = useParams();
     const [mensaje, setMensaje] = useState({});
     const [tokenback, setTokenBack] = useState(false);
-    const { control, formState: { errors }, reset } = useForm();
+    const { control, formState: { errors }, reset } = useForm(); // Utilizamos handleSubmit de useForm
     const [showPassword, setShowPassword] = useState(false);
+
     const verifyToken = async () => {
         try {
             const url = `${import.meta.env.VITE_BACKEND_URL}/recuperar-password/${token}`;
@@ -32,6 +33,12 @@ const Restablecer = () => {
     useEffect(() => {
         verifyToken();
     }, []);
+
+    const [form, setForm] = useState({
+        passwordnuevo: "",
+        repeatpassword: "" // Agregamos el campo de confirmación de contraseña
+    });
+
     const handleSubmit = async (e) => {
         e.preventDefault()
         try {
@@ -44,7 +51,8 @@ const Restablecer = () => {
         }
     }
 
-    const onSubmit = async (data) => { // Cambiamos handleSubmit a onSubmit
+
+    const onSubmit = async (data) => {
         try {
             const url = `${import.meta.env.VITE_BACKEND_URL}/nuevo-password/${token}`;
             const respuesta = await axios.post(url, data);
@@ -54,10 +62,11 @@ const Restablecer = () => {
             setMensaje({ respuesta: error.response?.data?.msg || 'An error occurred', tipo: false });
         }
     };
+
     return (
         <div className="flex flex-col items-center justify-center">
             {Object.keys(mensaje).length > 0 && <Mensaje tipo={mensaje.tipo}>{mensaje.respuesta}</Mensaje>}
-            <h1 className="text-3xl font-semibold mb-2 text-center uppercase  text-gray-500">Welcome again</h1>
+            <h1 className="text-3xl font-semibold mb-2 text-center uppercase text-gray-500">Welcome again</h1>
             <small className="text-gray-400 block my-4 text-sm">Please enter your details</small>
             <img className="object-cover h-80 w-80 rounded-full border-4 border-solid border-slate-600" src={logoDog} alt="image description" />
             {tokenback && (
@@ -66,7 +75,7 @@ const Restablecer = () => {
                         <label className="mb-2 block text-sm font-semibold">New password</label>
                         <div className="relative">
                             <Controller
-                                name="passwordnuevo" // Nombre del campo
+                                name="passwordnuevo"
                                 control={control}
                                 defaultValue=""
                                 rules={{
@@ -109,10 +118,50 @@ const Restablecer = () => {
                                 <p className="text-red-500 text-sm">{errors.passwordnuevo.message}</p>
                             )}
                         </div>
+
+                        <label className="mb-2 block text-sm font-semibold">Confirm password</label>
+                        <div className="relative">
+                            <Controller
+                                name="repeatpassword"
+                                control={control}
+                                defaultValue=""
+                                rules={{
+                                    required: 'Repeat password is required',
+                                    validate: (value) => {
+                                        if (value !== form.passwordnuevo) {
+                                            return 'Passwords do not match';
+                                        }
+                                        return true;
+                                    },
+                                }}
+                                render={({ field }) => (
+                                    <>
+                                        <input
+                                            id='repeatpassword'
+                                            type={showPassword ? 'text' : 'password'}
+                                            className={`border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md mb-2 ${errors.repeatpassword ? 'border-red-500' : 'border-gray-300'
+                                                } pr-10`}
+                                            placeholder='**************'
+                                            {...field}
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowPassword(!showPassword)}
+                                            className="absolute inset-y-0 right-0 flex items-center justify-center focus:outline-none pr-2"
+                                        >
+                                            <FontAwesomeIcon icon={showPassword ? faEye : faEyeSlash} />
+                                        </button>
+                                    </>
+                                )}
+                            />
+                            {errors.repeatpassword && (
+                                <p className="text-red-500 text-sm">{errors.repeatpassword.message}</p>
+                            )}
+                        </div>
                     </div>
 
                     <div className="mb-3">
-                        <button className="bg-gray-600 text-slate-300 border py-2 w-full rounded-xl mt-5 hover:scale-105 duration-300 hover:bg-gray-900 hover:text-white">Send</button>
+                        <button className="bg-gray-600 text-slate-300 border py-2 w-full rounded-xl mt-5 hover:scale-105 duration-300 hover-bg-gray-900 hover:text-white">Send</button>
                     </div>
                 </form>
             )}
