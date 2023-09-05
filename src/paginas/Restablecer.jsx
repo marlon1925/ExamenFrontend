@@ -7,6 +7,7 @@ import { Controller, useForm } from 'react-hook-form';
 import Mensaje from '../componets/Alertas/Mensaje';
 import logoDog from '../assets/dog-hand.webp';
 import { Link } from 'react-router-dom';
+import AuthContext from '../context/AuthProvider';
 
 const Restablecer = () => {
     const { token } = useParams();
