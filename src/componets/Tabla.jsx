@@ -20,7 +20,8 @@ const Tabla = () => {
     const [filtroTiempo, setFiltroTiempo] = useState("today");
     const [menuAbierto, setMenuAbierto] = useState(false);
     const [fechaSeleccionada, setFechaSeleccionada] = useState(""); // Declaración de fechaSeleccionada
-    const [errorFecha, setErrorFecha] = useState(false);
+    const [resultadosEncontrados, setResultadosEncontrados] = useState(true);
+
 
     function convertirFecha(fechaEnFormatoDDMMYYYY) {
         // Parsear la fecha en formato "dd/MM/yyyy" a un objeto Date
@@ -54,12 +55,13 @@ const Tabla = () => {
 
             // Actualiza los datos que se muestran en la tabla con los datos filtrados
             setPacientes(datosFiltrados);
+
+            // Verifica si se encontraron resultados
+            setResultadosEncontrados(datosFiltrados.length > 0);
         } else if (nuevoFiltro === "customDate" && fechaSeleccionada) {
-            console.log(fechaSeleccionada)
             const datosFiltrados = pacientes.filter((paciente) => {
-                const newDate = new Date(convertirFecha(fechaSeleccionada))
+                const newDate = new Date(convertirFecha(fechaSeleccionada));
                 const fechaSalida = new Date(paciente.ingreso);
-                console.log(newDate)
 
                 return (
                     fechaSalida.getDate() === newDate.getDate() &&
@@ -69,10 +71,14 @@ const Tabla = () => {
             });
             setPacientes(datosFiltrados);
 
-        }
-        else {
+            // Verifica si se encontraron resultados
+            setResultadosEncontrados(datosFiltrados.length > 0);
+        } else {
             // Si no se seleccionó "Today", muestra todos los pacientes sin filtrar
             listarPacientes();
+
+            // Aquí puedes restablecer el estado de resultadosEncontrados
+            setResultadosEncontrados(pacientes.length > 0);
         }
     };
 
@@ -108,7 +114,7 @@ const Tabla = () => {
 
     useEffect(() => {
         listarPacientes();
-    }, []);
+    }, [resultadosEncontrados, setResultadosEncontrados]);
 
     const handleDelete = async (id) => {
         try {
@@ -220,7 +226,7 @@ const Tabla = () => {
         {
             columns,
             data,
-            initialState: { pageSize: 10, defaultCanSort: true }, // Agrega defaultCanSort
+            initialState: { pageSize: 5, defaultCanSort: true }, // Agrega defaultCanSort
         },
         useFilters,
         useGlobalFilter,
@@ -233,6 +239,7 @@ const Tabla = () => {
 
             {pacientes.length === 0 ? (
                 <Mensaje tipo={"active"}>{"No records"}</Mensaje>
+                
             ) : (
                 <>
                     <div className="flex justify-between items-center mb-4">
@@ -329,7 +336,7 @@ const Tabla = () => {
                             </div>
                         </div>
                     )}
-
+                    {/* 
                     <table {...getTableProps()} className="w-full mt-5 table-auto shadow-lg bg-white">
                         <thead className="bg-gray-800 text-slate-400">
                             {headerGroups.map((headerGroup) => (
@@ -357,7 +364,40 @@ const Tabla = () => {
                             })}
 
                         </tbody>
-                    </table>
+                    </table> */}
+                    {resultadosEncontrados ? (
+
+                        <table {...getTableProps()} className="w-full mt-5 table-auto shadow-lg bg-white">
+                            <thead className="bg-gray-800 text-slate-400">
+                                {headerGroups.map((headerGroup) => (
+                                    <tr {...headerGroup.getHeaderGroupProps()}>
+                                        {headerGroup.headers.map((column) => (
+                                            <th {...column.getHeaderProps()} className="p-2">
+                                                {column.render("Header")}
+                                            </th>
+                                        ))}
+                                    </tr>
+                                ))}
+                            </thead>
+                            <tbody {...getTableBodyProps()}>
+                                {page.map((row) => {
+                                    prepareRow(row);
+                                    const { original } = row;
+                                    return (
+                                        <tr {...row.getRowProps()} className="border-b hover:bg-gray-300 text-center" key={original._id}>
+                                            {row.cells.map((cell) => {
+                                                const { render, getCellProps } = cell;
+                                                return <td {...getCellProps()}>{render("Cell")}</td>;
+                                            })}
+                                        </tr>
+                                    );
+                                })}
+
+                            </tbody>
+                        </table>
+                    ) : (
+                        <Mensaje tipo={"activ"}>{"No records"}</Mensaje>
+                    )}
                     <div className="pagination flex items-center justify-center mt-4">
                         <button
                             className="px-3 py-1 border rounded-md mr-2 hover:bg-gray-400 hover:text-white bg-gray-800 text-slate-400"
@@ -397,7 +437,7 @@ const Tabla = () => {
                                 setPageSize(Number(e.target.value));
                             }}
                         >
-                            {[1, 10, 15, 20, 25, 30].map((pageSize) => (
+                            {[1, 5, 10, 15, 20].map((pageSize) => (
                                 <option key={pageSize} value={pageSize}>
                                     Show {pageSize}
                                 </option>
