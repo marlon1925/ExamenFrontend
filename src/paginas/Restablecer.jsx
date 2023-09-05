@@ -168,14 +168,9 @@ const Restablecer = () => {
                             )}
                         </div>
                     </div>
-
                     <div className="mb-3">
-                        <input
-                            type="submit"
-                            className='bg-gray-800 w-full p-3 
-        text-slate-300 uppercase font-bold rounded-lg 
-        hover:bg-gray-600 cursor-pointer transition-all'
-                            value='Actualizar' />
+                        <button className="bg-gray-600 text-slate-300 border py-2 w-full rounded-xl mt-5 hover:scale-105 duration-300 hover:bg-gray-900 hover:text-white">Send
+                        </button>
                     </div>
                 </form>
             )}
