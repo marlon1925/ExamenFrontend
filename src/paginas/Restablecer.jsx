@@ -12,7 +12,7 @@ const Restablecer = () => {
     const { token } = useParams();
     const [mensaje, setMensaje] = useState({});
     const [tokenback, setTokenBack] = useState(false);
-    const { control, handleSubmit, formState: { errors }, getValues, reset } = useForm();
+    const { control, formState: { errors }, getValues, reset } = useForm();
     const [showPassword, setShowPassword] = useState(false);
 
     const verifyToken = async () => {
@@ -35,23 +35,24 @@ const Restablecer = () => {
         verifyToken();
     }, []);
 
-    const onSubmit = async (data) => {
-        const { passwordactual, passwordnuevo, repeatpassword } = data;
+    const handleChange = (e) => {
+        setForm({
+            ...form,
+            [e.target.name]: e.target.value
+        })
+    }
 
-        if (passwordnuevo !== repeatpassword) {
-            setMensaje({ respuesta: "Passwords do not match", tipo: false });
-            return;
-        }
-
+    const handleSubmit = async (e) => {
+        e.preventDefault()
         try {
-            const url = `${import.meta.env.VITE_BACKEND_URL}/nuevo-password/${token}`;
-            const respuesta = await axios.post(url, { passwordactual, passwordnuevo });
-            reset(); // Resetea el formulario después de enviar
-            setMensaje({ respuesta: respuesta.data.msg, tipo: true });
+            const url = `${import.meta.env.VITE_BACKEND_URL}/nuevo-password/${token}`
+            const respuesta = await axios.post(url, form)
+            setForm({})
+            setMensaje({ respuesta: respuesta.data.msg, tipo: true })
         } catch (error) {
-            setMensaje({ respuesta: error.response.data.msg, tipo: false });
+            setMensaje({ respuesta: error.response.data.msg, tipo: false })
         }
-    };
+    }
 
     return (
         <div className="flex flex-col items-center justify-center">
@@ -60,7 +61,7 @@ const Restablecer = () => {
             <small className="text-gray-400 block my-4 text-sm">Please enter your details</small>
             <img className="object-cover h-80 w-80 rounded-full border-4 border-solid border-slate-600" src={logoDog} alt="image description" />
             {tokenback && (
-                <form className='w-full' onSubmit={handleSubmit(onSubmit)}>
+                <form className='w-full' onSubmit={handleSubmit}>
                     <div className="mb-1">
                         <label className="mb-2 block text-sm font-semibold">New password</label>
                         <div className="relative">
@@ -93,6 +94,7 @@ const Restablecer = () => {
                                                 } pr-10`}
                                             placeholder='**************'
                                             {...field}
+                                            onChange={handleChange}
                                         />
                                         <button
                                             type="button"
@@ -127,6 +129,7 @@ const Restablecer = () => {
                                                 } pr-10`}
                                             placeholder='**************'
                                             {...field}
+                                            onChange={handleChange}
                                         />
                                         <button
                                             type="button"
