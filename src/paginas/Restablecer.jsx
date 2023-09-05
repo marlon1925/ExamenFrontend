@@ -33,17 +33,22 @@ const Restablecer = () => {
     useEffect(() => {
         verifyToken();
     }, []);
+    const [form, setForm] = useState({
+        passwordnuevo: "",
+        repeatpassword: ""
+    })
 
     const onSubmit = async (data) => {
+        e.preventDefault()
         try {
-            const url = `${import.meta.env.VITE_BACKEND_URL}/nuevo-password/${token}`;
-            const respuesta = await axios.post(url, data);
-            reset(); // Reinicia el formulario
-            setMensaje({ respuesta: respuesta.data.msg, tipo: true });
+            const url = `${import.meta.env.VITE_BACKEND_URL}/nuevo-password/${token}`
+            const respuesta = await axios.post(url, form)
+            setForm({})
+            setMensaje({ respuesta: respuesta.data.msg, tipo: true })
         } catch (error) {
-            setMensaje({ respuesta: error.response?.data?.msg || 'An error occurred', tipo: false });
+            setMensaje({ respuesta: error.response.data.msg, tipo: false })
         }
-    };
+    }
 
     const validatePassword = (value) => {
         const hasUppercase = /[A-Z]/.test(value);
@@ -86,6 +91,8 @@ const Restablecer = () => {
                                     },
                                     validate: {
                                         hasUppercase: validatePassword,
+                                        message: 'Password must be at least 8 characters long',
+
                                     },
                                 }}
                                 render={({ field }) => (
