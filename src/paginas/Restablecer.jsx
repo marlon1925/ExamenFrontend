@@ -14,6 +14,7 @@ const Restablecer = () => {
     const [mensaje, setMensaje] = useState({});
     const [tokenback, setTokenBack] = useState(false);
     const { control, formState: { errors }} = useForm();
+    const [showPassword, setShowPassword] = useState(false);
 
     const verifyToken = async () => {
         try {
