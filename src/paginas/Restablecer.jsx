@@ -14,7 +14,6 @@ const Restablecer = () => {
     const [tokenback, setTokenBack] = useState(false);
     const { control, formState: { errors }, getValues, reset } = useForm();
     const [showPassword, setShowPassword] = useState(false);
-
     const verifyToken = async () => {
         try {
             const url = `${import.meta.env.VITE_BACKEND_URL}/recuperar-password/${token}`;
@@ -29,24 +28,21 @@ const Restablecer = () => {
             setMensaje({ respuesta: error.response?.data?.msg || 'An error occurred', tipo: false });
         }
     };
-    
 
     useEffect(() => {
         verifyToken();
     }, []);
 
-
-    const handleSubmit = async (data) => { // Recibe los datos del formulario como argumento
+    const onSubmit = async (data) => { // Cambiamos handleSubmit a onSubmit
         try {
             const url = `${import.meta.env.VITE_BACKEND_URL}/nuevo-password/${token}`;
-            const respuesta = await axios.post(url, data); // Usa los datos en lugar de form
+            const respuesta = await axios.post(url, data);
             reset(); // Reinicia el formulario
             setMensaje({ respuesta: respuesta.data.msg, tipo: true });
         } catch (error) {
             setMensaje({ respuesta: error.response?.data?.msg || 'An error occurred', tipo: false });
         }
-    }
-
+    };
     return (
         <div className="flex flex-col items-center justify-center">
             {Object.keys(mensaje).length > 0 && <Mensaje tipo={mensaje.tipo}>{mensaje.respuesta}</Mensaje>}
@@ -54,12 +50,12 @@ const Restablecer = () => {
             <small className="text-gray-400 block my-4 text-sm">Please enter your details</small>
             <img className="object-cover h-80 w-80 rounded-full border-4 border-solid border-slate-600" src={logoDog} alt="image description" />
             {tokenback && (
-                <form className='w-full' onSubmit={handleSubmit}>
+                <form className='w-full' onSubmit={handleSubmit(onSubmit)}>
                     <div className="mb-1">
                         <label className="mb-2 block text-sm font-semibold">New password</label>
                         <div className="relative">
                             <Controller
-                                name="passwordnuevo"
+                                name="passwordnuevo" // Nombre del campo
                                 control={control}
                                 defaultValue=""
                                 rules={{
@@ -100,40 +96,6 @@ const Restablecer = () => {
                             />
                             {errors.passwordnuevo && (
                                 <p className="text-red-500 text-sm">{errors.passwordnuevo.message}</p>
-                            )}
-                        </div>
-
-                        <label className="mb-2 block text-sm font-semibold">Repeat password</label>
-                        <div className="relative">
-                            <Controller
-                                name="repeatpassword"
-                                control={control}
-                                defaultValue=""
-                                rules={{
-                                    required: 'Repeat password is required',
-                                }}
-                                render={({ field }) => (
-                                    <>
-                                        <input
-                                            id='repeatpassword'
-                                            type={showPassword ? 'text' : 'password'}
-                                            className={`border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md mb-2 ${errors.repeatpassword ? 'border-red-500' : 'border-gray-300'
-                                                } pr-10`}
-                                            placeholder='**************'
-                                            {...field}
-                                        />
-                                        <button
-                                            type="button"
-                                            onClick={() => setShowPassword(!showPassword)}
-                                            className="absolute inset-y-0 right-0 flex items-center justify-center focus:outline-none pr-2"
-                                        >
-                                            <FontAwesomeIcon icon={showPassword ? faEye : faEyeSlash} />
-                                        </button>
-                                    </>
-                                )}
-                            />
-                            {errors.repeatpassword && (
-                                <p className="text-red-500 text-sm">{errors.repeatpassword.message}</p>
                             )}
                         </div>
                     </div>
