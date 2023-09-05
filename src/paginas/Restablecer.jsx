@@ -12,7 +12,7 @@ const Restablecer = () => {
     const { token } = useParams();
     const [mensaje, setMensaje] = useState({});
     const [tokenback, setTokenBack] = useState(false);
-    const { control, formState: { errors }, reset } = useForm(); // Utilizamos handleSubmit de useForm
+    const { control, formState: { errors }, handleSubmit, reset, getValues } = useForm();
     const [showPassword, setShowPassword] = useState(false);
 
     const verifyToken = async () => {
@@ -34,24 +34,6 @@ const Restablecer = () => {
         verifyToken();
     }, []);
 
-    const [form, setForm] = useState({
-        passwordnuevo: "",
-        repeatpassword: "" // Agregamos el campo de confirmación de contraseña
-    });
-
-    const handleSubmit = async (e) => {
-        e.preventDefault()
-        try {
-            const url = `${import.meta.env.VITE_BACKEND_URL}/nuevo-password/${token}`
-            const respuesta = await axios.post(url, form)
-            setForm({})
-            setMensaje({ respuesta: respuesta.data.msg, tipo: true })
-        } catch (error) {
-            setMensaje({ respuesta: error.response.data.msg, tipo: false })
-        }
-    }
-
-
     const onSubmit = async (data) => {
         try {
             const url = `${import.meta.env.VITE_BACKEND_URL}/nuevo-password/${token}`;
@@ -61,6 +43,24 @@ const Restablecer = () => {
         } catch (error) {
             setMensaje({ respuesta: error.response?.data?.msg || 'An error occurred', tipo: false });
         }
+    };
+
+    const validatePassword = (value) => {
+        const hasUppercase = /[A-Z]/.test(value);
+        const hasSpecialCharacter = /[^A-Za-z0-9]/.test(value);
+
+        if (!hasUppercase || !hasSpecialCharacter) {
+            return false;
+        }
+        return true;
+    };
+
+    const validateConfirmPassword = (value) => {
+        const newPassword = getValues('passwordnuevo');
+        if (value !== newPassword) {
+            return 'Passwords do not match';
+        }
+        return true;
     };
 
     return (
@@ -84,14 +84,8 @@ const Restablecer = () => {
                                         value: 8,
                                         message: 'Password must be at least 8 characters long',
                                     },
-                                    validate: (value) => {
-                                        if (!/(?=.*[A-Z])/.test(value)) {
-                                            return 'Password must contain at least one uppercase letter';
-                                        }
-                                        if (!/(?=.*[^A-Za-z0-9])/.test(value)) {
-                                            return 'Password must contain at least one special character';
-                                        }
-                                        return true;
+                                    validate: {
+                                        hasUppercase: validatePassword,
                                     },
                                 }}
                                 render={({ field }) => (
@@ -127,11 +121,8 @@ const Restablecer = () => {
                                 defaultValue=""
                                 rules={{
                                     required: 'Repeat password is required',
-                                    validate: (value) => {
-                                        if (value !== form.passwordnuevo) {
-                                            return 'Passwords do not match';
-                                        }
-                                        return true;
+                                    validate: {
+                                        confirmPassword: validateConfirmPassword,
                                     },
                                 }}
                                 render={({ field }) => (
@@ -169,7 +160,7 @@ const Restablecer = () => {
             <div className="flex flex-col items-center justify-center">
                 {Object.keys(mensaje).length > 0 && <Mensaje tipo={mensaje.tipo}>{mensaje.respuesta}</Mensaje>}
                 <p className="md:text-lg lg:text-xl text-gray-600 mt-8">You can now Log in</p>
-                <Link to="/login" className="p-3 m-5 w-full text-center bg-gray-600 text-slate-300 border rounded-xl hover:scale-110 duration-300 hover:bg-gray-900 hover:text-white">Login</Link>
+                <Link to="/login" className="p-3 m-5 w-full text-center bg-gray-600 text-slate-300 border rounded-xl hover:scale-110 duration-300 hover-bg-gray-900 hover:text-white">Login</Link>
             </div>
         </div>
     );
