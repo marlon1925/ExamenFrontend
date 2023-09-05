@@ -282,12 +282,25 @@ export const Register = () => {
                                 control={control}
                                 defaultValue={form.password}
                                 rules={{
-                                    required: 'Campo obligatorio',
-                                    maxLength: {
-                                        value: 50,
-                                        message: 'Longitud máxima alcanzada',
+                                    required: 'Password is required',
+                                    minLength: {
+                                        value: 8,
+                                        message: 'Password must be at least 8 characters long',
                                     },
-                                    validate: (value) => validatePassword(value) || 'The password does not meet the minimum requirements, one uppercase and one special character, and must be longer than 8 characters.',
+                                    validate: {
+                                        hasUppercase: (value) => {
+                                            if (!/(?=.*[A-Z])/.test(value)) {
+                                                return 'Password must contain at least one uppercase letter';
+                                            }
+                                            return true;
+                                        },
+                                        hasSpecialCharacter: (value) => {
+                                            if (!/(?=.*[^A-Za-z0-9])/.test(value)) {
+                                                return 'Password must contain at least one special character';
+                                            }
+                                            return true;
+                                        },
+                                    },
                                 }}
                                 render={({ field }) => (
                                     <div className="mb-3 relative">

@@ -107,12 +107,25 @@ const Password = () => {
                             control={control}
                             defaultValue=""
                             rules={{
-                                required: 'Campo obligatorio',
-                                maxLength: {
-                                    value: 50,
-                                    message: 'Longitud máxima alcanzada',
+                                required: 'New password is required',
+                                minLength: {
+                                    value: 8,
+                                    message: 'Password must be at least 8 characters long',
                                 },
-                                validate: (value) => validatePassword(value) || 'The password does not meet the minimum requirements, one upper case and one special character, and must be longer than 8 characters.',
+                                validate: {
+                                    hasUppercase: (value) => {
+                                        if (!/(?=.*[A-Z])/.test(value)) {
+                                            return 'Password must contain at least one uppercase letter';
+                                        }
+                                        return true;
+                                    },
+                                    hasSpecialCharacter: (value) => {
+                                        if (!/(?=.*[^A-Za-z0-9])/.test(value)) {
+                                            return 'Password must contain at least one special character';
+                                        }
+                                        return true;
+                                    },
+                                },
                             }}
                             render={({ field }) => (
                                 <input
