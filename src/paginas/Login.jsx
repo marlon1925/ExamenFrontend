@@ -3,7 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useForm, Controller } from 'react-hook-form';
 import AuthContext from '../context/AuthProvider'
 import axios from 'axios';
-
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
 const Login = () => {
 
@@ -12,7 +13,7 @@ const Login = () => {
     const [error, setError] = useState(""); // Nuevo estado para el mensaje de error
     const [mensaje, setMensaje] = useState({});
     const { handleSubmit, control, formState: { errors } } = useForm();
-
+    const [showPassword, setShowPassword] = useState(false);
 
     const onSubmit = async (data) => {
         try {
@@ -87,20 +88,31 @@ const Login = () => {
                             name="password"
                             control={control}
                             defaultValue=""
-                            rules={{ required: 'Obligatory field' }}
+                            rules={{ required: 'Campo obligatorio' }}
                             render={({ field }) => (
                                 <div className="mb-3">
-                                    <label className="mb-2 block text-sm font-semibold">Password</label>
-                                    <input
-                                        {...field}
-                                        type="password"
-                                        placeholder="********************"
-                                        className={`block w-full rounded-md border ${errors.password ? 'border-red-500' : 'border-gray-300'} focus:border-purple-700 focus:outline-none focus:ring-1 focus:ring-purple-700 py-1 px-2 text-gray-500`}
-                                    />
+                                    <label className="mb-2 block text-sm font-semibold">Contraseña</label>
+                                    <div className="relative">
+                                        <input
+                                            {...field}
+                                            type={showPassword ? 'text' : 'password'}
+                                            placeholder="********************"
+                                            className={`block w-full rounded-md border ${errors.password ? 'border-red-500' : 'border-gray-300'} focus:border-purple-700 focus:outline-none focus:ring-1 focus:ring-purple-700 py-1 px-2 text-gray-500`}
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowPassword(!showPassword)}
+                                            className="absolute right-3 top-1/2 transform -translate-y-1/2 focus:outline-none"
+                                        >
+                                            <FontAwesomeIcon icon={showPassword ? faEye : faEyeSlash} />
+                                        </button>
+                                    </div>
                                     {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
                                 </div>
                             )}
                         />
+
+
                         <div className="my-4">
                             <button className="py-2 w-full block text-center bg-gray-500 text-slate-300 border rounded-xl hover:scale-100 duration-300 hover:bg-gray-900 hover:text-white">Login</button>
                         </div>

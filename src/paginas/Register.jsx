@@ -3,6 +3,8 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm, Controller } from 'react-hook-form';
 import Mensaje from '../componets/Alertas/Mensaje';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
 export const Register = () => {
     const navigate = useNavigate();
@@ -22,25 +24,54 @@ export const Register = () => {
         password: '',
     });
 
-    const handleChange = (e) => {
-        setForm({
-            ...form,
-            [e.target.name]: e.target.value,
-        });
-    };
-
     const [mensaje, setMensaje] = useState({});
+    const [showPassword, setShowPassword] = useState(false);
 
     const onSubmit = async (data) => {
         try {
+            if (!validatePassword(data.password)) {
+                setMensaje({ respuesta: 'The password does not meet the minimum requirements', tipo: false });
+                return;
+            }
+
             const url = `${import.meta.env.VITE_BACKEND_URL}/registro`;
             const respuesta = await axios.post(url, data);
             setMensaje({ respuesta: respuesta.data.msg, tipo: true });
-            setForm({});
+
+            // Restablece el estado del formulario
+            setForm({
+                nombre: '',
+                apellido: '',
+                direccion: '',
+                telefono: '',
+                email: '',
+                password: '',
+            });
         } catch (error) {
             setMensaje({ respuesta: error.response.data.msg, tipo: false });
         }
     };
+
+    // Función para validar la contraseña
+    const validatePassword = (password) => {
+        // Requiere al menos 8 caracteres
+        if (password.length < 8) {
+            return false;
+        }
+
+        // Requiere al menos una mayúscula
+        if (!/[A-Z]/.test(password)) {
+            return false;
+        }
+
+        // Requiere al menos un carácter especial (puedes personalizar esta expresión regular)
+        if (!/[!@#$%^&*()_+[\]{};':"\\|,.<>/?]+/.test(password)) {
+            return false;
+        }
+
+        return true;
+    };
+
 
     return (
         <>
@@ -68,7 +99,7 @@ export const Register = () => {
                             <Controller
                                 name="nombre"
                                 control={control}
-                                defaultValue=""
+                                defaultValue={form.nombre}
                                 rules={{
                                     required: 'Campo Obligatorio',
                                     pattern: {
@@ -103,7 +134,7 @@ export const Register = () => {
                             <Controller
                                 name="apellido"
                                 control={control}
-                                defaultValue=""
+                                defaultValue={form.apellido}
                                 rules={{
                                     required: "Obligatory field",
                                     pattern: {
@@ -140,7 +171,7 @@ export const Register = () => {
                             <Controller
                                 name="direccion"
                                 control={control}
-                                defaultValue=""
+                                defaultValue={form.direccion}
                                 rules={{
                                     required: "Obligatory field"
                                 }}
@@ -173,7 +204,7 @@ export const Register = () => {
                             <Controller
                                 name="telefono"
                                 control={control}
-                                defaultValue=""
+                                defaultValue={form.telefono}
                                 rules={{
                                     required: "Obligatory field",
                                     pattern: {
@@ -185,7 +216,7 @@ export const Register = () => {
                                     <div className="mb-3">
                                         <input
                                             {...field}
-                                            type="text" 
+                                            type="text"
                                             placeholder="Enter your phone"
                                             className={`block w-full rounded-md border ${errors.telefono ? "border-red-500" : "border-gray-300"
                                                 } focus:border-gray-700 focus:outline-none focus:ring-1 focus:ring-gray-700 py-1 px-1.5 text-gray-500`}
@@ -209,7 +240,7 @@ export const Register = () => {
                             <Controller
                                 name="email"
                                 control={control}
-                                defaultValue=""
+                                defaultValue={form.email}
                                 rules={{
                                     required: "Obligatory field",
                                     pattern: {
@@ -249,32 +280,42 @@ export const Register = () => {
                             <Controller
                                 name="password"
                                 control={control}
-                                defaultValue=""
+                                defaultValue={form.password}
                                 rules={{
-                                    required: "Obligatory field",
+                                    required: 'Campo obligatorio',
                                     maxLength: {
                                         value: 50,
-                                        message: "Maximum length reached",
+                                        message: 'Longitud máxima alcanzada',
                                     },
+                                    validate: (value) => validatePassword(value) || 'The password does not meet the minimum requirements, one uppercase and one special character, and must be longer than 8 characters.',
                                 }}
                                 render={({ field }) => (
-                                    <div className="mb-3">
-                                        <input
-                                            {...field}
-                                            type="password"
-                                            placeholder="********************"
-                                            className={`block w-full rounded-md border ${errors.password ? "border-red-500" : "border-gray-300"
-                                                } focus:border-purple-700 focus:outline-none focus:ring-1 focus:ring-purple-700 py-1 px-2 text-gray-500`}
-                                            required
-                                        />
+                                    <div className="mb-3 relative">
+                                        <div className="flex">
+                                            <input
+                                                {...field}
+                                                type={showPassword ? 'text' : 'password'}
+                                                placeholder="********************"
+                                                className={`flex-grow rounded-md border ${errors.password ? 'border-red-500' : 'border-gray-300'
+                                                    } focus:border-purple-700 focus:outline-none focus:ring-1 focus:ring-purple-700 py-1 px-2 text-gray-500`}
+                                                required
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={() => setShowPassword(!showPassword)}
+                                                className="ml-2 flex items-center justify-center focus:outline-none"
+                                            >
+                                                <FontAwesomeIcon icon={showPassword ? faEye : faEyeSlash} />
+                                            </button>
+                                        </div>
                                         {errors.password && (
-                                            <p className="text-red-500 text-sm">
-                                                {errors.password.message}
-                                            </p>
+                                            <p className="text-red-500 text-sm">{errors.password.message}</p>
                                         )}
                                     </div>
                                 )}
                             />
+
+
                         </div>
 
                         <div className="mb-3">
