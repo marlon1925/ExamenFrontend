@@ -13,7 +13,7 @@ const Restablecer = () => {
     const { token } = useParams();
     const [mensaje, setMensaje] = useState({});
     const [tokenback, setTokenBack] = useState(false);
-    const { control, formState: { errors }} = useForm();
+    const { control, formState: { errors } } = useForm();
     const [showPassword, setShowPassword] = useState(false);
 
     const verifyToken = async () => {
@@ -103,9 +103,14 @@ const Restablecer = () => {
                                         value: 8,
                                         message: 'Password must be at least 8 characters long',
                                     },
-                                    pattern: {
-                                        value: /(?=.*[A-Z])(?=.*[^A-Za-z0-9])/, // Requiere al menos una mayúscula y un carácter especial
-                                        message: 'Password must contain at least one uppercase letter and one special character',
+                                    validate: (value) => {
+                                        if (!/(?=.*[A-Z])/.test(value)) {
+                                            return 'Password must contain at least one uppercase letter';
+                                        }
+                                        if (!/(?=.*[^A-Za-z0-9])/.test(value)) {
+                                            return 'Password must contain at least one special character';
+                                        }
+                                        return true;
                                     },
                                 }}
                                 render={({ field }) => (
@@ -133,6 +138,7 @@ const Restablecer = () => {
                             )}
                         </div>
                     </div>
+
 
                     <div className="mb-3">
                         <button className="bg-gray-600 text-slate-300 border py-2 w-full rounded-xl mt-5 hover:scale-105 duration-300 hover:bg-gray-900 hover:text-white">Send
