@@ -102,11 +102,14 @@ const Restablecer = () => {
                                         <input
                                             id='password'
                                             type={showPassword ? 'text' : 'password'}
-                                            className={`border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md mb-2 ${errors.passwordnuevo ? 'border-red-500' : 'border-gray-300'
+                                            className={`border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md mb-2 ${errors.password ? 'border-red-500' : 'border-gray-300'
                                                 } pr-10`}
                                             placeholder='**************'
                                             {...field}
-                                            onChange={() => handleChange}
+                                            onChange={(e) => {
+                                                field.onChange(e); // Asegúrate de llamar al onChange de React Hook Form
+                                                handleChange(e); // Llama a tu función handleChange para actualizar el estado local
+                                            }}
                                         />
                                         <button
                                             type="button"
@@ -118,6 +121,7 @@ const Restablecer = () => {
                                     </>
                                 )}
                             />
+
                             {errors.passwordnuevo && (
                                 <p className="text-red-500 text-sm">{errors.passwordnuevo.message}</p>
                             )}
@@ -144,8 +148,10 @@ const Restablecer = () => {
                                                 } pr-10`}
                                             placeholder='**************'
                                             {...field}
-                                            onChange={() => handleChange}
-
+                                            onChange={(e) => {
+                                                field.onChange(e); // Asegúrate de llamar al onChange de React Hook Form
+                                                handleChange(e); // Llama a tu función handleChange para actualizar el estado local
+                                            }}
                                         />
                                         <button
                                             type="button"
