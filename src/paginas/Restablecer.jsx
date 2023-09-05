@@ -50,15 +50,6 @@ const Restablecer = () => {
         }
     }
 
-    const validatePassword = (value) => {
-        const hasUppercase = /[A-Z]/.test(value);
-        const hasSpecialCharacter = /[^A-Za-z0-9]/.test(value);
-
-        if (!hasUppercase || !hasSpecialCharacter) {
-            return false;
-        }
-        return true;
-    };
 
     const validateConfirmPassword = (value) => {
         const newPassword = getValues('passwordnuevo');
@@ -90,9 +81,18 @@ const Restablecer = () => {
                                         message: 'Password must be at least 8 characters long',
                                     },
                                     validate: {
-                                        hasUppercase: validatePassword,
-                                        message: 'Password must be at least 8 characters long',
-
+                                        hasUppercase: (value) => {
+                                            if (!/(?=.*[A-Z])/.test(value)) {
+                                                return 'Password must contain at least one uppercase letter';
+                                            }
+                                            return true;
+                                        },
+                                        hasSpecialCharacter: (value) => {
+                                            if (!/(?=.*[^A-Za-z0-9])/.test(value)) {
+                                                return 'Password must contain at least one special character';
+                                            }
+                                            return true;
+                                        },
                                     },
                                 }}
                                 render={({ field }) => (
