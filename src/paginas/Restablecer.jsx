@@ -12,7 +12,7 @@ const Restablecer = () => {
     const { token } = useParams();
     const [mensaje, setMensaje] = useState({});
     const [tokenback, setTokenBack] = useState(false);
-    const { handleSubmit, control, formState: { errors }, reset } = useForm();
+    const { control, formState: { errors }, reset } = useForm();
     const [showPassword, setShowPassword] = useState(false);
     const verifyToken = async () => {
         try {
@@ -32,6 +32,17 @@ const Restablecer = () => {
     useEffect(() => {
         verifyToken();
     }, []);
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        try {
+            const url = `${import.meta.env.VITE_BACKEND_URL}/nuevo-password/${token}`
+            const respuesta = await axios.post(url, form)
+            setForm({})
+            setMensaje({ respuesta: respuesta.data.msg, tipo: true })
+        } catch (error) {
+            setMensaje({ respuesta: error.response.data.msg, tipo: false })
+        }
+    }
 
     const onSubmit = async (data) => { // Cambiamos handleSubmit a onSubmit
         try {
