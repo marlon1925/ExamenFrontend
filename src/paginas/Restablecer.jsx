@@ -11,57 +11,46 @@ import AuthContext from '../context/AuthProvider';
 
 const Restablecer = () => {
     const { token } = useParams();
-    const [mensaje, setMensaje] = useState({});
-    const { actualizarPassword } = useContext(AuthContext);
-    const [tokenback, setTokenBack] = useState(false);
-    const { control, formState: { errors }, handleSubmit, reset, getValues } = useForm();
-    const [showPassword, setShowPassword] = useState(false);
+    const [mensaje, setMensaje] = useState({})
+    const [tokenback, setTokenBack] = useState(false)
 
     const verifyToken = async () => {
         try {
-            const url = `${import.meta.env.VITE_BACKEND_URL}/recuperar-password/${token}`;
-            const respuesta = await axios.get(url);
-            if (respuesta.data) {
-                setTokenBack(true);
-                setMensaje({ respuesta: respuesta.data.msg, tipo: true });
-            } else {
-                // Aquí puedes manejar el caso en el que la respuesta no contenga datos válidos
-            }
+            const url = `${import.meta.env.VITE_BACKEND_URL}/recuperar-password/${token}`
+            const respuesta = await axios.get(url)
+            setTokenBack(true)
+            setMensaje({ respuesta: respuesta.data.msg, tipo: true })
         } catch (error) {
-            setMensaje({ respuesta: error.response?.data?.msg || 'An error occurred', tipo: false });
+            setMensaje({ respuesta: error.response.data.msg, tipo: false })
         }
-    };
-
+    }
     useEffect(() => {
-        verifyToken();
-    }, []);
-    const onSubmit = async (data) => {
-        if (data.passwordnuevo === "" || data.repeatpassword === "") {
-            setMensaje({ respuesta: "All fields must be entered", tipo: false });
-            setTimeout(() => {
-                setMensaje({});
-            }, 3000);
-            return;
+        verifyToken()
+    }, [])
+
+    const [form, setForm] = useState({
+        password: "",
+        confirmpassword: ""
+    })
+
+    const handleChange = (e) => {
+        setForm({
+            ...form,
+            [e.target.name]: e.target.value
+        })
+    }
+
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        try {
+            const url = `${import.meta.env.VITE_BACKEND_URL}/nuevo-password/${token}`
+            const respuesta = await axios.post(url, form)
+            setForm({})
+            setMensaje({ respuesta: respuesta.data.msg, tipo: true })
+        } catch (error) {
+            setMensaje({ respuesta: error.response.data.msg, tipo: false })
         }
-
-        const resultado = await actualizarPassword(data);
-        setMensaje(resultado);
-        setTimeout(() => {
-            setMensaje({});
-        }, 3000);
-        reset();
-    };
-
-
-
-
-    const validateConfirmPassword = (value) => {
-        const newPassword = getValues('passwordnuevo');
-        if (value !== newPassword) {
-            return 'Passwords do not match';
-        }
-        return true;
-    };
+    }
 
     return (
         <div className="flex flex-col items-center justify-center">
@@ -70,12 +59,12 @@ const Restablecer = () => {
             <small className="text-gray-400 block my-4 text-sm">Please enter your details</small>
             <img className="object-cover h-80 w-80 rounded-full border-4 border-solid border-slate-600" src={logoDog} alt="image description" />
             {tokenback && (
-                <form onSubmit={handleSubmit(onSubmit)}>
+                <form className='w-full' onSubmit={handleSubmit}>
                     <div className="mb-1">
                         <label className="mb-2 block text-sm font-semibold">New password</label>
                         <div className="relative">
                             <Controller
-                                name="passwordnuevo"
+                                name="password"
                                 control={control}
                                 defaultValue=""
                                 rules={{
@@ -102,12 +91,13 @@ const Restablecer = () => {
                                 render={({ field }) => (
                                     <>
                                         <input
-                                            id='passwordnuevo'
+                                            id='password'
                                             type={showPassword ? 'text' : 'password'}
                                             className={`border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md mb-2 ${errors.passwordnuevo ? 'border-red-500' : 'border-gray-300'
                                                 } pr-10`}
                                             placeholder='**************'
                                             {...field}
+                                            onChange={()=>handleChange}
                                         />
                                         <button
                                             type="button"
@@ -127,7 +117,7 @@ const Restablecer = () => {
                         <label className="mb-2 block text-sm font-semibold">Confirm password</label>
                         <div className="relative">
                             <Controller
-                                name="repeatpassword"
+                                name="confirmpassword"
                                 control={control}
                                 defaultValue=""
                                 rules={{
@@ -139,12 +129,14 @@ const Restablecer = () => {
                                 render={({ field }) => (
                                     <>
                                         <input
-                                            id='repeatpassword'
+                                            id='confirmpassword'
                                             type={showPassword ? 'text' : 'password'}
                                             className={`border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md mb-2 ${errors.repeatpassword ? 'border-red-500' : 'border-gray-300'
                                                 } pr-10`}
                                             placeholder='**************'
-                                            {...field}
+                                            {...field} 
+                                            onChange={()=>handleChange}
+
                                         />
                                         <button
                                             type="button"
