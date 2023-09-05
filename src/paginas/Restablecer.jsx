@@ -19,12 +19,17 @@ const Restablecer = () => {
         try {
             const url = `${import.meta.env.VITE_BACKEND_URL}/recuperar-password/${token}`;
             const respuesta = await axios.get(url);
-            setTokenBack(true);
-            setMensaje({ respuesta: respuesta.data.msg, tipo: true });
+            if (respuesta.data) {
+                setTokenBack(true);
+                setMensaje({ respuesta: respuesta.data.msg, tipo: true });
+            } else {
+                // Aquí puedes manejar el caso en el que la respuesta no contenga datos válidos
+            }
         } catch (error) {
-            setMensaje({ respuesta: error.response.data.msg, tipo: false });
+            setMensaje({ respuesta: error.response?.data?.msg || 'An error occurred', tipo: false });
         }
     };
+    
 
     useEffect(() => {
         verifyToken();
