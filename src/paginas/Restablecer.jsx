@@ -82,10 +82,10 @@ const Restablecer = () => {
             {tokenback && (
                 <form className='w-full' onSubmit={handleSubmit(onSubmit)}>
                     <div className="mb-1">
-                        <label className="mb-2 block text-sm font-semibold">New password</label>
+                        <label htmlFor="newpassword" className="mb-2 block text-sm font-semibold">New password</label>
                         <div className="relative">
                             <Controller
-                                name="passwordactual"
+                                name="newpassword"
                                 control={control}
                                 defaultValue=""
                                 rules={{
@@ -116,10 +116,10 @@ const Restablecer = () => {
                             )}
                         </div>
 
-                        <label className="mb-2 block text-sm font-semibold">Repeat password</label>
+                        <label htmlFor="repeatpassword" className="mb-2 block text-sm font-semibold">Repeat password</label>
                         <div className="relative">
                             <Controller
-                                name="passwordnuevo"
+                                name="repeatpassword"
                                 control={control}
                                 defaultValue=""
                                 rules={{
